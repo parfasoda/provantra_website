@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#07080a">
+    <title>PROVANTRA — B2B Sourcing & Logistics Almaty</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            300: '#e8cd9e',
+                            400: '#dfba82',
+                            500: '#cfa76e',
+                            600: '#b88e55',
+                            700: '#96713e',
+                        },
+                        dark: {
+                            950: '#07080a',
+                            900: '#0c0d10',
+                            800: '#14161b',
+                            700: '#1e2128',
+                            600: '#2b2f3a'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                        heading: ['Montserrat', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Montserrat Font with full Cyrillic (ru, kk) & Latin support -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #07080a;
+            color: #e4e4e7;
+            overflow-x: hidden;
+        }
+        
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #fcecd7 0%, #cfa76e 50%, #96713e 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gold-gradient-bg {
+            background: linear-gradient(135deg, #e8cd9e 0%, #cfa76e 50%, #b88e55 100%);
+        }
+
+        .glass-card {
+            background: rgba(20, 22, 27, 0.7);
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Scroll reveal class animations */
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(35px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .reveal-element.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Animated Transit Path Pulse */
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -100;
+            }
+        }
+        
+        .animated-route-line {
+            stroke-dasharray: 8 6;
+            animation: dash 3s linear infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: 0 0 12px rgba(207, 167, 110, 0.30);
+            }
+            50% {
+                box-shadow: 0 0 34px rgba(207, 167, 110, 0.55);
+            }
+        }
+
+        .gold-glow {
+            animation: pulseGlow 2.5s infinite ease-in-out;
+        }
+
+        /* Modal Overlay & Card Animations */
+        #rfq-modal {
+            transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        #rfq-modal-card {
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease-out;
+            transform: translateY(30px) scale(0.92);
+            opacity: 0;
+        }
+
+        #rfq-modal.open #rfq-modal-card {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #07080a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e2128;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #cfa76e;
+        }
+    
+        /* ===== Адаптив / мобильные устройства ===== */
+        html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+        /* якорные ссылки не прячутся под фиксированной шапкой */
+        section[id], footer[id] { scroll-margin-top: 5rem; }
+
+        /* значение справа в строках «Что входит…» не переносится */
+        .info-row > span:last-child {
+            flex-shrink: 0;
+            text-align: right;
+        }
+
+        @media (max-width: 639px) {
+            .glass-card {
+                -webkit-backdrop-filter: blur(10px);
+                backdrop-filter: blur(10px);
+            }
+        }
+
+        /* Модальное окно не вылезает за экран и прокручивается внутри */
+        #rfq-modal { overscroll-behavior: contain; }
+        #rfq-modal-card {
+            max-height: 92vh;
+            max-height: calc(100dvh - 2rem);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Плавающая кнопка WhatsApp с логотипом */
+        .wa-float {
+            position: fixed;
+            right: max(1rem, env(safe-area-inset-right));
+            bottom: max(1rem, env(safe-area-inset-bottom));
+            z-index: 45;
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 9999px;
+            background: #25D366;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(37, 211, 102, 0.45);
+            transition: transform 0.2s ease, background-color 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .wa-float::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 9999px;
+            background: #25D366;
+            opacity: 0.5;
+            z-index: -1;
+            animation: waPing 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+        .wa-float:hover { transform: scale(1.08); background: #1ebe5a; }
+        .wa-float:active { transform: scale(0.94); }
+        @keyframes waPing {
+            0%   { transform: scale(1);   opacity: 0.5; }
+            80%, 100% { transform: scale(1.6); opacity: 0; }
+        }
+        @media (min-width: 640px) {
+            .wa-float {
+                width: 4rem;
+                height: 4rem;
+                right: max(1.5rem, env(safe-area-inset-right));
+                bottom: max(1.5rem, env(safe-area-inset-bottom));
+            }
+        }
+
+        /* Окно «Политика обработки персональных данных» (поверх формы заявки) */
+        #privacy-modal {
+            opacity: 0;
+            visibility: hidden;
+            overscroll-behavior: contain;
+            transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #privacy-modal.open { opacity: 1; visibility: visible; }
+        #privacy-modal-card {
+            max-height: 92vh;
+            max-height: calc(100dvh - 2rem);
+            transform: translateY(24px) scale(0.96);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease-out;
+        }
+        #privacy-modal.open #privacy-modal-card { transform: translateY(0) scale(1); opacity: 1; }
+        #privacy-body { overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto !important; }
+            *, *::before, *::after {
+                animation: none !important;
+                transition-duration: 0.01ms !important;
+            }
+            .reveal-element { opacity: 1; transform: none; }
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-gold-500 selection:text-black">
+
+    <!-- NAVIGATION HEADER -->
+    <header class="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-dark-950/80 backdrop-blur-md transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2">
+            
+            <!-- LOGO BRANDING -->
+            <a href="#" class="flex items-center gap-2 sm:gap-3 group min-w-0">
+                
+                <!-- Логотип PROVANTRA (встроен в файл, отдельный logo.png не нужен) -->
+                <img src="data:image/png;base64,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" alt="PROVANTRA Logo" class="h-8 sm:h-11 w-auto flex-shrink-0 object-contain transform transition-transform group-hover:scale-105">
+
+                <div class="flex flex-col max-[350px]:hidden">
+                    <span class="font-extrabold text-[15px] min-[380px]:text-lg sm:text-2xl tracking-wider sm:tracking-widest text-white leading-none">PROVANTRA</span>
+                    <span class="hidden sm:block text-[10px] tracking-[0.25em] text-gold-500 font-bold uppercase mt-1">B2B Sourcing & Supply</span>
+                </div>
+            </a>
+
+            <!-- DESKTOP NAVIGATION LINKS -->
+            <nav class="hidden xl:flex items-center space-x-8 text-xs font-bold tracking-wider uppercase text-zinc-300">
+                <a href="#route" class="hover:text-gold-500 transition-colors" data-i18n="nav_route">Маршрут Китай-Алматы</a>
+                <a href="#services-tabs" class="hover:text-gold-500 transition-colors" data-i18n="nav_services">Услуги</a>
+                <a href="#advantages" class="hover:text-gold-500 transition-colors" data-i18n="nav_advantages">Преимущества</a>
+                <a href="#contacts" class="hover:text-gold-500 transition-colors" data-i18n="nav_contacts">Контакты</a>
+            </nav>
+
+            <!-- CONTROLS: LANGUAGE SWITCHER & CTA -->
+            <div class="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+                
+                <!-- Language Switcher Toggle -->
+                <div class="flex items-center bg-dark-800 border border-white/10 rounded-lg p-0.5 sm:p-1 text-[11px] sm:text-xs font-bold font-mono">
+                    <button onclick="setLanguage('ru')" id="lang-ru" class="px-2 sm:px-2.5 py-1.5 sm:py-1 rounded-md text-gold-500 bg-gold-500/10 transition-all">RU</button>
+                    <button onclick="setLanguage('kk')" id="lang-kk" class="px-2 sm:px-2.5 py-1.5 sm:py-1 rounded-md text-zinc-400 hover:text-white transition-all">KK</button>
+                    <button onclick="setLanguage('en')" id="lang-en" class="px-2 sm:px-2.5 py-1.5 sm:py-1 rounded-md text-zinc-400 hover:text-white transition-all">EN</button>
+                </div>
+
+                <button onclick="openRfqModal()" class="hidden md:inline-flex items-center justify-center px-5 py-2.5 text-xs font-extrabold tracking-wider uppercase text-black gold-gradient-bg rounded-lg hover:shadow-[0_0_20px_rgba(207,167,110,0.4)] transition-all duration-300 active:scale-95" data-i18n="btn_rfq">
+                    Запросить КП
+                </button>
+                
+                <button id="mobile-menu-btn" class="xl:hidden p-2.5 -mr-1 text-zinc-300 hover:text-white focus:outline-none" aria-label="Открыть меню" aria-expanded="false" aria-controls="mobile-menu">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- MOBILE MENU OVERLAY -->
+        <div id="mobile-menu" class="hidden xl:hidden border-b border-white/10 bg-dark-900/95 backdrop-blur-xl px-4 sm:px-6 pt-2 pb-6 space-y-1 max-h-[calc(100dvh-4rem)] overflow-y-auto text-xs font-bold uppercase tracking-wider">
+            <a href="#route" class="mobile-link block py-3 text-sm border-b border-white/5 text-zinc-300 hover:text-gold-500" data-i18n="nav_route">Маршрут Китай-Алматы</a>
+            <a href="#services-tabs" class="mobile-link block py-3 text-sm border-b border-white/5 text-zinc-300 hover:text-gold-500" data-i18n="nav_services">Услуги</a>
+            <a href="#advantages" class="mobile-link block py-3 text-sm border-b border-white/5 text-zinc-300 hover:text-gold-500" data-i18n="nav_advantages">Преимущества</a>
+            <a href="#contacts" class="mobile-link block py-3 text-sm border-b border-white/5 text-zinc-300 hover:text-gold-500" data-i18n="nav_contacts">Контакты</a>
+            <button onclick="openRfqModal()" class="w-full mt-4 py-3.5 text-xs font-extrabold tracking-wider uppercase text-black gold-gradient-bg rounded-lg shadow-md" data-i18n="btn_rfq">
+                Запросить КП
+            </button>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="relative lg:min-h-screen pt-28 sm:pt-32 pb-16 sm:pb-20 flex items-center overflow-hidden bg-gradient-to-b from-dark-950 via-dark-900 to-dark-950">
+        <div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-[360px] h-[360px] sm:w-[700px] sm:h-[700px] bg-gold-500/10 rounded-full blur-[90px] sm:blur-[160px] pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+            <div class="grid lg:grid-cols-12 gap-12 items-center">
+                
+                <div class="lg:col-span-7 space-y-8 text-center lg:text-left reveal-element">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-2xl sm:rounded-full border border-gold-500/30 bg-gold-500/10 text-gold-400 text-[11px] sm:text-xs font-semibold tracking-wide sm:tracking-wider uppercase text-left">
+                        <i data-lucide="map-pin" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                        <span data-i18n="hero_badge">B2B Поставки под ключ в Алматы</span>
+                    </div>
+                    
+                    <h1 class="text-[1.65rem] min-[400px]:text-3xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.2] sm:leading-[1.15] tracking-tight">
+                        <span data-i18n="hero_title_1">Прямые поставки оборудования и товаров из Китая</span>
+                        <span class="gold-gradient-text block mt-2" data-i18n="hero_title_2">прямо на ваш склад в Алматы</span>
+                    </h1>
+                    
+                    <p class="text-sm sm:text-base text-zinc-400 max-w-2xl mx-auto lg:mx-0 font-normal leading-relaxed" data-i18n="hero_desc">
+                        PROVANTRA B2B берет на себя весь комплекс задач: инспекция заводов в Китае, контрактование, таможенное оформление (растаможка) и доставка до дверей любого бизнеса в Алматы.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+                        <button onclick="openRfqModal()" class="w-full sm:w-auto px-5 sm:px-8 py-4 text-center text-xs font-extrabold tracking-wider uppercase text-black gold-gradient-bg rounded-xl hover:shadow-[0_0_30px_rgba(207,167,110,0.4)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-3">
+                            <span data-i18n="hero_cta">Рассчитать стоимость доставки в Алматы</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 flex-shrink-0"></i>
+                        </button>
+                        <a href="#route" class="w-full sm:w-auto px-5 sm:px-8 py-4 text-xs font-bold tracking-wider uppercase text-zinc-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="truck" class="w-4 h-4 text-gold-500"></i>
+                            <span data-i18n="hero_route_btn">Смотреть маршрут</span>
+                        </a>
+                    </div>
+
+                    <!-- TRUST METRICS -->
+                    <div class="pt-8 grid grid-cols-2 sm:grid-cols-4 gap-6 border-t border-white/10">
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-black text-white">100%</div>
+                            <div class="text-xs text-zinc-400 mt-1" data-i18n="stat_1">Гарантия очистки</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-black text-gold-400">12-18</div>
+                            <div class="text-xs text-zinc-400 mt-1" data-i18n="stat_2">Дней экспресс-доставка</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-black text-white">Алматы</div>
+                            <div class="text-xs text-zinc-400 mt-1" data-i18n="stat_3">Локальный офис и склад</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-black text-gold-400">0%</div>
+                            <div class="text-xs text-zinc-400 mt-1" data-i18n="stat_4">Риск брака (QC)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HERO INTERACTIVE ALMATY LOGISTICS STATUS CARD -->
+                <div class="lg:col-span-5 reveal-element">
+                    <div class="glass-card rounded-2xl p-5 sm:p-8 relative border border-gold-500/30 gold-glow">
+                        <div class="flex flex-wrap items-center justify-between gap-2 pb-5 sm:pb-6 border-b border-white/10">
+                            <div class="flex items-center gap-3">
+                                <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span class="text-xs font-bold uppercase tracking-wider text-zinc-200">PROVANTRA Almaty Transit</span>
+                            </div>
+                            <span class="text-[10px] px-2.5 py-1 rounded bg-gold-500/20 text-gold-400 font-mono font-bold">LIVE TRACKING</span>
+                        </div>
+
+                        <div class="space-y-5 my-6">
+                            <div class="flex items-start gap-4 p-3.5 rounded-xl bg-dark-900/80 border border-white/5">
+                                <div class="p-2 rounded-lg bg-gold-500/10 text-gold-400 mt-0.5">
+                                    <i data-lucide="factory" class="w-5 h-5"></i>
+                                </div>
+                                <div class="text-xs">
+                                    <div class="font-bold text-white uppercase tracking-wider" data-i18n="live_step1_title">Гуанчжоу / Иу (Китай)</div>
+                                    <div class="text-zinc-400 mt-1" data-i18n="live_step1_desc">Инспекция, консолидация и погрузка на авто/ж/д</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4 p-3.5 rounded-xl bg-dark-900/80 border border-gold-500/30">
+                                <div class="p-2 rounded-lg bg-gold-500 text-black mt-0.5">
+                                    <i data-lucide="shield-check" class="w-5 h-5"></i>
+                                </div>
+                                <div class="text-xs">
+                                    <div class="font-bold text-gold-400 uppercase tracking-wider" data-i18n="live_step2_title">КПП Хоргос (Таможня РК)</div>
+                                    <div class="text-zinc-300 mt-1" data-i18n="live_step2_desc">Таможенное декларирование и получение СТ-1 / ДС</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4 p-3.5 rounded-xl bg-dark-900/80 border border-white/5">
+                                <div class="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 mt-0.5">
+                                    <i data-lucide="warehouse" class="w-5 h-5"></i>
+                                </div>
+                                <div class="text-xs">
+                                    <div class="font-bold text-emerald-400 uppercase tracking-wider" data-i18n="live_step3_title">Склад Алматы (Доставка)</div>
+                                    <div class="text-zinc-400 mt-1" data-i18n="live_step3_desc">Разгрузка, финальный осмотр и передача документов</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-xs text-zinc-400 font-medium">
+                            <span>Прямой ВЭД Договор</span>
+                            <span class="text-gold-400 font-mono">Оплата в KZT / CNY</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ANIMATED CHINA -> KHORGOS -> ALMATY ROUTE FEATURE SECTION -->
+    <section id="route" class="py-16 sm:py-24 bg-dark-900 border-y border-white/10 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center max-w-3xl mx-auto mb-16 reveal-element">
+                <span class="text-[11px] sm:text-xs font-extrabold tracking-[0.15em] sm:tracking-[0.25em] text-gold-500 uppercase" data-i18n="route_subtitle">Прозрачная логистическая артерия</span>
+                <h2 class="text-2xl sm:text-4xl font-black text-white mt-2" data-i18n="route_title">Маршрут доставки: Китай &rarr; Хоргос &rarr; Алматы</h2>
+                <p class="text-zinc-400 text-xs sm:text-sm mt-3" data-i18n="route_desc">Прямой авто- и ж/д коридор с минимальным временем прохождения таможенных процедур на границе РК.</p>
+            </div>
+
+            <!-- SVG Route Map Canvas Container -->
+            <div class="glass-card rounded-2xl sm:rounded-3xl p-3 sm:p-6 lg:p-10 border border-gold-500/20 relative reveal-element">
+
+                <!-- ===== ПК (от 1024px): горизонтальная карта ===== -->
+                <div class="hidden lg:block relative w-full aspect-[9/4] bg-dark-950/90 rounded-2xl overflow-hidden border border-white/5">
+
+                    <!-- Grid pattern background -->
+                    <div class="absolute inset-0 bg-[radial-gradient(#cfa76e_1px,transparent_1px)] [background-size:24px_24px] opacity-15"></div>
+
+                    <svg viewBox="0 0 900 400" class="w-full h-full absolute inset-0 text-gold-500" role="img" aria-label="Маршрут: Китай, КПП Хоргос, Алматы">
+                        <defs>
+                            <linearGradient id="routeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#dfba82" />
+                                <stop offset="50%" stop-color="#cfa76e" />
+                                <stop offset="100%" stop-color="#10b981" />
+                            </linearGradient>
+                        </defs>
+
+                        <!-- Main Static Line -->
+                        <path d="M 150 280 Q 400 120 750 180" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="6" stroke-linecap="round"/>
+
+                        <!-- Animated Dotted Delivery Line -->
+                        <path d="M 150 280 Q 400 120 750 180" fill="none" stroke="url(#routeGradient)" stroke-width="5" class="animated-route-line" stroke-linecap="round"/>
+
+                        <!-- Point 1: China (Guangzhou / Yiwu) -->
+                        <g transform="translate(150, 280)">
+                            <circle r="14" fill="#14161b" stroke="#dfba82" stroke-width="4" />
+                            <circle r="5" fill="#dfba82" />
+                        </g>
+
+                        <!-- Point 2: Khorgos Border (Customs) — точка лежит ровно на кривой: t = 0.5414 -> (450; 171.24) -->
+                        <g transform="translate(450, 171.24)">
+                            <circle r="14" fill="#14161b" stroke="#cfa76e" stroke-width="4" />
+                            <circle r="5" fill="#cfa76e" />
+                        </g>
+
+                        <!-- Point 3: Almaty Destination -->
+                        <g transform="translate(750, 180)">
+                            <circle r="18" fill="#14161b" stroke="#10b981" stroke-width="4" />
+                            <circle r="7" fill="#10b981" />
+                        </g>
+
+                        <!-- Moving Pulse (груз едет Китай -> Алматы по той же линии, поверх точек) -->
+                        <g>
+                            <circle r="7" fill="#cfa76e" opacity="0.7">
+                                <animate attributeName="r" values="7;20" dur="1.5s" repeatCount="indefinite" />
+                                <animate attributeName="opacity" values="0.7;0" dur="1.5s" repeatCount="indefinite" />
+                            </circle>
+                            <circle r="7" fill="#FFFFFF" />
+                            <animateMotion path="M 150 280 Q 400 120 750 180" dur="6s" repeatCount="indefinite" />
+                        </g>
+                    </svg>
+
+                    <!-- Подписи (позиции привязаны к точкам в процентах от размера карты) -->
+                    <div class="absolute left-[16.67%] top-[70%] mt-8 -translate-x-1/2 glass-card p-4 rounded-xl border border-gold-500/30 max-w-[200px] text-center">
+                        <span class="text-[10px] font-bold text-gold-400 tracking-widest uppercase">ОТПРАВКА</span>
+                        <h4 class="font-bold text-white text-base">Заводы Китая</h4>
+                        <p class="text-[11px] text-zinc-400 mt-0.5">Гуанчжоу / Иу / Иньчуань</p>
+                    </div>
+
+                    <div class="absolute left-1/2 top-[42.81%] -mt-9 -translate-x-1/2 -translate-y-full glass-card p-4 rounded-xl border border-gold-500/40 max-w-[220px] text-center">
+                        <span class="text-[10px] font-bold text-gold-400 tracking-widest uppercase">ТАМОЖНЯ РК</span>
+                        <h4 class="font-bold text-white text-base">КПП Хоргос / МЦПС</h4>
+                        <p class="text-[11px] text-zinc-400 mt-0.5">Растаможка и сертификация</p>
+                    </div>
+
+                    <div class="absolute left-[83.33%] top-[45%] mt-10 -translate-x-1/2 glass-card p-4 rounded-xl border border-emerald-500/40 max-w-[220px] text-center">
+                        <span class="text-[10px] font-bold text-emerald-400 tracking-widest uppercase">НАЗНАЧЕНИЕ</span>
+                        <h4 class="font-bold text-white text-base">Склад в Алматы</h4>
+                        <p class="text-[11px] text-zinc-400 mt-0.5">Выгрузка & Двери-в-Двери</p>
+                    </div>
+                </div>
+
+                <!-- ===== Телефон / планшет (до 1024px): вертикальная карта ===== -->
+                <div class="lg:hidden relative mx-auto w-full max-w-[420px] aspect-[320/460] bg-dark-950/90 rounded-2xl overflow-hidden border border-white/5">
+
+                    <div class="absolute inset-0 bg-[radial-gradient(#cfa76e_1px,transparent_1px)] [background-size:20px_20px] opacity-15"></div>
+
+                    <svg viewBox="0 0 320 460" class="w-full h-full absolute inset-0 text-gold-500" role="img" aria-label="Маршрут: Китай, КПП Хоргос, Алматы">
+                        <defs>
+                            <linearGradient id="routeGradientV" gradientUnits="userSpaceOnUse" x1="0" y1="50" x2="0" y2="410">
+                                <stop offset="0%" stop-color="#dfba82" />
+                                <stop offset="50%" stop-color="#cfa76e" />
+                                <stop offset="100%" stop-color="#10b981" />
+                            </linearGradient>
+                        </defs>
+
+                        <path d="M 56 50 Q 136 230 56 410" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="6" stroke-linecap="round"/>
+                        <path d="M 56 50 Q 136 230 56 410" fill="none" stroke="url(#routeGradientV)" stroke-width="5" class="animated-route-line" stroke-linecap="round"/>
+
+                        <!-- Китай -->
+                        <g transform="translate(56, 50)">
+                            <circle r="14" fill="#14161b" stroke="#dfba82" stroke-width="4" />
+                            <circle r="5" fill="#dfba82" />
+                        </g>
+
+                        <!-- КПП Хоргос: ровно середина кривой (t = 0.5) -> (96; 230) -->
+                        <g transform="translate(96, 230)">
+                            <circle r="14" fill="#14161b" stroke="#cfa76e" stroke-width="4" />
+                            <circle r="5" fill="#cfa76e" />
+                        </g>
+
+                        <!-- Алматы -->
+                        <g transform="translate(56, 410)">
+                            <circle r="18" fill="#14161b" stroke="#10b981" stroke-width="4" />
+                            <circle r="7" fill="#10b981" />
+                        </g>
+
+                        <g>
+                            <circle r="7" fill="#cfa76e" opacity="0.7">
+                                <animate attributeName="r" values="7;20" dur="1.5s" repeatCount="indefinite" />
+                                <animate attributeName="opacity" values="0.7;0" dur="1.5s" repeatCount="indefinite" />
+                            </circle>
+                            <circle r="7" fill="#FFFFFF" />
+                            <animateMotion path="M 56 50 Q 136 230 56 410" dur="6s" repeatCount="indefinite" />
+                        </g>
+                    </svg>
+
+                    <div class="absolute left-[28.75%] top-[10.87%] -translate-y-1/2 max-w-[56%] glass-card p-2.5 rounded-xl border border-gold-500/30">
+                        <span class="text-[9px] font-bold text-gold-400 tracking-widest uppercase">ОТПРАВКА</span>
+                        <h4 class="font-bold text-white text-sm leading-tight">Заводы Китая</h4>
+                        <p class="text-[11px] text-zinc-400 mt-0.5 leading-snug">Гуанчжоу / Иу / Иньчуань</p>
+                    </div>
+
+                    <div class="absolute left-[41.25%] top-[50%] -translate-y-1/2 max-w-[54%] glass-card p-2.5 rounded-xl border border-gold-500/40">
+                        <span class="text-[9px] font-bold text-gold-400 tracking-widest uppercase">ТАМОЖНЯ РК</span>
+                        <h4 class="font-bold text-white text-sm leading-tight">КПП Хоргос / МЦПС</h4>
+                        <p class="text-[11px] text-zinc-400 mt-0.5 leading-snug">Растаможка и сертификация</p>
+                    </div>
+
+                    <div class="absolute left-[28.75%] top-[89.13%] -translate-y-1/2 max-w-[56%] glass-card p-2.5 rounded-xl border border-emerald-500/40">
+                        <span class="text-[9px] font-bold text-emerald-400 tracking-widest uppercase">НАЗНАЧЕНИЕ</span>
+                        <h4 class="font-bold text-white text-sm leading-tight">Склад в Алматы</h4>
+                        <p class="text-[11px] text-zinc-400 mt-0.5 leading-snug">Выгрузка & Двери-в-Двери</p>
+                    </div>
+                </div>
+
+                <!-- Timeline Milestones -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 mt-4 sm:mt-8">
+                    <div class="p-4 rounded-xl bg-dark-950/60 border border-white/5">
+                        <div class="text-xs font-bold text-gold-400 uppercase tracking-wider">Шаг 1: Консолидация (1-3 дня)</div>
+                        <p class="text-xs text-zinc-400 mt-1">Приемка на нашем складе в КНР, проверке упаковки и маркировка для таможни РК.</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-dark-950/60 border border-white/5">
+                        <div class="text-xs font-bold text-gold-400 uppercase tracking-wider">Шаг 2: Граница Хоргос (1-2 дня)</div>
+                        <p class="text-xs text-zinc-400 mt-1">Быстрое прохождение постов декларирования по ускоренной процедуре ВЭД.</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-dark-950/60 border border-white/5">
+                        <div class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Шаг 3: Алматы (1 день)</div>
+                        <p class="text-xs text-zinc-400 mt-1">Адресная доставка манипулятором или фурой прямо на ваш склад в Алматы.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERACTIVE TABBED SERVICES SHOWCASE -->
+    <section id="services-tabs" class="py-16 sm:py-24 bg-dark-950">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center max-w-3xl mx-auto mb-12 reveal-element">
+                <span class="text-[11px] sm:text-xs font-extrabold tracking-[0.15em] sm:tracking-[0.25em] text-gold-500 uppercase" data-i18n="tabs_subtitle">B2B Услуги в Алматы</span>
+                <h2 class="text-2xl sm:text-4xl font-black text-white mt-2" data-i18n="tabs_title">Управление поставками под ключ</h2>
+                <p class="text-zinc-400 text-xs sm:text-sm mt-3" data-i18n="tabs_desc">Выберите направление для подробной информации о процессе взаимодействия.</p>
+            </div>
+
+            <!-- Tab Buttons -->
+            <div class="grid grid-cols-1 sm:flex sm:flex-wrap sm:justify-center gap-2.5 sm:gap-3 mb-8 sm:mb-10 reveal-element">
+                <button onclick="switchTab('tab-sourcing')" id="btn-tab-sourcing" class="tab-btn active w-full sm:w-auto px-5 sm:px-6 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all border border-gold-500 bg-gold-500 text-black shadow-[0_0_20px_rgba(207,167,110,0.3)]">
+                    <i data-lucide="search" class="w-4 h-4 inline-block mr-2"></i>
+                    <span data-i18n="tab_btn_1">Поиск заводов & Аудит</span>
+                </button>
+
+                <button onclick="switchTab('tab-logistics')" id="btn-tab-logistics" class="tab-btn w-full sm:w-auto px-5 sm:px-6 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all border border-white/10 bg-dark-800 text-zinc-400 hover:text-white">
+                    <i data-lucide="truck" class="w-4 h-4 inline-block mr-2"></i>
+                    <span data-i18n="tab_btn_2">Доставка в Алматы</span>
+                </button>
+
+                <button onclick="switchTab('tab-customs')" id="btn-tab-customs" class="tab-btn w-full sm:w-auto px-5 sm:px-6 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all border border-white/10 bg-dark-800 text-zinc-400 hover:text-white">
+                    <i data-lucide="file-check" class="w-4 h-4 inline-block mr-2"></i>
+                    <span data-i18n="tab_btn_3">Растаможка РК & ВЭД</span>
+                </button>
+            </div>
+
+            <!-- Tab Content Containers (Animated Fade/Slide) -->
+            <div class="relative sm:min-h-[360px]">
+                
+                <!-- TAB 1: SOURCING -->
+                <div id="tab-sourcing" class="tab-content transition-all duration-500 opacity-100 scale-100 block">
+                    <div class="glass-card rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-white/10 grid md:grid-cols-2 gap-6 md:gap-8 items-center">
+                        <div class="space-y-4">
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-gold-500 px-3 py-1 rounded bg-gold-500/10">STAGE 01</span>
+                            <h3 class="text-xl sm:text-2xl font-black text-white" data-i18n="tab1_title">Прямой поиск производителей в КНР</h3>
+                            <p class="text-zinc-400 text-sm leading-relaxed" data-i18n="tab1_desc">
+                                Мы выезжаем на фабрики в Гуанчжоу, Шэньчжэне и Нинбо. Проверяем юридическую чистоту, производственные мощности, наличие сертификатов ISO и делаем закуп образцов перед партией.
+                            </p>
+                            <ul class="space-y-2.5 text-xs text-zinc-300 font-medium">
+                                <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 mt-0.5 flex-shrink-0 text-gold-500"></i> Проверка оборудования и квалификации инженеров</li>
+                                <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 mt-0.5 flex-shrink-0 text-gold-500"></i> Выкуп образцов и доставка курьером в Алматы</li>
+                                <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 mt-0.5 flex-shrink-0 text-gold-500"></i> Переговоры о лучшей цене напрямую с директором завода</li>
+                            </ul>
+                            <button onclick="openRfqModal('Поиск заводов')" class="mt-4 w-full sm:w-auto px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-black gold-gradient-bg rounded-lg">
+                                Заказать поиск фабрики
+                            </button>
+                        </div>
+                        <div class="bg-dark-900 rounded-2xl p-4 sm:p-6 border border-white/5 space-y-4">
+                            <div class="font-bold text-white text-sm border-b border-white/10 pb-3">Что входит в инспекцию:</div>
+                            <div class="info-row flex items-center justify-between gap-3 text-xs text-zinc-400">
+                                <span>Проверка сырья и компонентов</span>
+                                <span class="text-gold-400 font-bold">100%</span>
+                            </div>
+                            <div class="info-row flex items-center justify-between gap-3 text-xs text-zinc-400">
+                                <span>Отчет о фабрике (30+ фото/видео)</span>
+                                <span class="text-gold-400 font-bold">Да</span>
+                            </div>
+                            <div class="info-row flex items-center justify-between gap-3 text-xs text-zinc-400">
+                                <span>Тестирование функций готовой продукции</span>
+                                <span class="text-gold-400 font-bold">Да</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: LOGISTICS -->
+                <div id="tab-logistics" class="tab-content transition-all duration-500 opacity-0 scale-95 hidden">
+                    <div class="glass-card rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-white/10 grid md:grid-cols-2 gap-6 md:gap-8 items-center">
+                        <div class="space-y-4">
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-gold-500 px-3 py-1 rounded bg-gold-500/10">STAGE 02</span>
+                            <h3 class="text-xl sm:text-2xl font-black text-white" data-i18n="tab2_title">Авто и Ж/Д Логистика Китай &rarr; Алматы</h3>
+                            <p class="text-zinc-400 text-sm leading-relaxed" data-i18n="tab2_desc">
+                                Оптимизированные маршруты доставки сборных (LCL) и генеральных (FCL) контейнерных грузов. Доставка до складов в районе Северного Кольца, Первомайки и промзон Алматы.
+                            </p>
+                            <ul class="space-y-2.5 text-xs text-zinc-300 font-medium">
+                                <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 mt-0.5 flex-shrink-0 text-gold-500"></i> Экспресс-автодоставка (12-15 дней)</li>
+                                <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 mt-0.5 flex-shrink-0 text-gold-500"></i> Поездные контейнерные отправки (18-22 дня)</li>
+                                <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 mt-0.5 flex-shrink-0 text-gold-500"></i> Страхование груза от повреждений и утери</li>
+                            </ul>
+                            <button onclick="openRfqModal('Расчет логистики в Алматы')" class="mt-4 w-full sm:w-auto px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-black gold-gradient-bg rounded-lg">
+                                Запросить тарификацию
+                            </button>
+                        </div>
+                        <div class="bg-dark-900 rounded-2xl p-4 sm:p-6 border border-white/5 space-y-4">
+                            <div class="font-bold text-white text-sm border-b border-white/10 pb-3">Преимущества наших авторейсов:</div>
+                            <div class="info-row flex items-center justify-between gap-3 text-xs text-zinc-400">
+                                <span>Прямой въезд через Хоргос</span>
+                                <span class="text-emerald-400 font-bold">Без задержек</span>
+                            </div>
+                            <div class="info-row flex items-center justify-between gap-3 text-xs text-zinc-400">
+                                <span>Собственный автопарк фур</span>
+                                <span class="text-gold-400 font-bold">20+ единиц</span>
+                            </div>
+                            <div class="info-row flex items-center justify-between gap-3 text-xs text-zinc-400">
+                                <span>GPS-трекинг по Казахстану</span>
+                                <span class="text-gold-400 font-bold">24/7</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: CUSTOMS -->
+                <div id="tab-customs" class="tab-content transition-all duration-500 opacity-0 scale-95 hidden">
+                    <div class="glass-card rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-white/10 grid md:grid-cols-2 gap-6 md:gap-8 items-center">
+                        <div class="space-y-4">
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-gold-500 px-3 py-1 rounded bg-gold-500/10">STAGE 03</span>
+                            <h3 class="text-xl sm:text-2xl font-black text-white" data-i18n="tab3_title">Таможенная очистка (Растаможка РК)</h3>
+                            <p class="text-zinc-400 text-sm leading-relaxed" data-i18n="tab3_desc">
+                                Полная легализация товара. Вы получаете товар с уплаченным НДС, декларацией на товары (ГТД / ДТ), сертификатами соответствия и всеми закрывающими документами для бухгалтерии в РК.
+                            </p>
+                            <ul class="space-y-2.5 text-xs text-zinc-300 font-medium">
+                                <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 mt-0.5 flex-shrink-0 text-gold-500"></i> Корректный подбор ТН ВЭД кодов</li>
+                                <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 mt-0.5 flex-shrink-0 text-gold-500"></i> Сертификация ЕАЭС и Декларации Соответствия</li>
+                                <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 mt-0.5 flex-shrink-0 text-gold-500"></i> Оплата в тенге (KZT) с предоставлением ЭСФ</li>
+                            </ul>
+                            <button onclick="openRfqModal('Таможенное оформление')" class="mt-4 w-full sm:w-auto px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-black gold-gradient-bg rounded-lg">
+                                Консультация декларанта
+                            </button>
+                        </div>
+                        <div class="bg-dark-900 rounded-2xl p-4 sm:p-6 border border-white/5 space-y-4">
+                            <div class="font-bold text-white text-sm border-b border-white/10 pb-3">Документы для бизнеса РК:</div>
+                            <div class="info-row flex items-center justify-between gap-3 text-xs text-zinc-400">
+                                <span>Электронная счет-фактура (ЭСФ)</span>
+                                <span class="text-gold-400 font-bold">100% Выгрузка</span>
+                            </div>
+                            <div class="info-row flex items-center justify-between gap-3 text-xs text-zinc-400">
+                                <span>Декларация на товары (ДТ)</span>
+                                <span class="text-gold-400 font-bold">Официально</span>
+                            </div>
+                            <div class="info-row flex items-center justify-between gap-3 text-xs text-zinc-400">
+                                <span>Акт выполненных работ / Накладная</span>
+                                <span class="text-gold-400 font-bold">Форма З-2</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- WHY CHOOSE US / ADVANTAGES SECTION -->
+    <section id="advantages" class="py-16 sm:py-24 bg-dark-900 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center max-w-3xl mx-auto mb-16 reveal-element">
+                <span class="text-[11px] sm:text-xs font-extrabold tracking-[0.15em] sm:tracking-[0.25em] text-gold-500 uppercase" data-i18n="adv_subtitle">Почему PROVANTRA B2B</span>
+                <h2 class="text-2xl sm:text-4xl font-black text-white mt-2" data-i18n="adv_title">Преимущества работы с нами в Алматы</h2>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-5 md:gap-8">
+                
+                <!-- Advantage 1 -->
+                <div class="glass-card rounded-2xl p-6 sm:p-8 border border-white/10 hover:border-gold-500/40 transition-all reveal-element">
+                    <div class="w-12 h-12 rounded-xl bg-gold-500/10 text-gold-400 border border-gold-500/30 flex items-center justify-center mb-6">
+                        <i data-lucide="building-2" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3" data-i18n="adv1_h">Локальный офис в Алматы</h3>
+                    <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed" data-i18n="adv1_p">
+                        Вам не нужно общаться с зарубежными агентами с разницей во времени. Наш менеджер в Алматы всегда на связи и готов приехать на личную встречу.
+                    </p>
+                </div>
+
+                <!-- Advantage 2 -->
+                <div class="glass-card rounded-2xl p-6 sm:p-8 border border-white/10 hover:border-gold-500/40 transition-all reveal-element">
+                    <div class="w-12 h-12 rounded-xl bg-gold-500/10 text-gold-400 border border-gold-500/30 flex items-center justify-center mb-6">
+                        <i data-lucide="shield-alert" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3" data-i18n="adv2_h">Финансовая ответственность</h3>
+                    <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed" data-i18n="adv2_p">
+                        Зафиксированная стоимость в договоре поставки. Мы берем на себя риски изменения таможенных пошлин и форс-мажоров в пути.
+                    </p>
+                </div>
+
+                <!-- Advantage 3 -->
+                <div class="glass-card rounded-2xl p-6 sm:p-8 border border-white/10 hover:border-gold-500/40 transition-all reveal-element">
+                    <div class="w-12 h-12 rounded-xl bg-gold-500/10 text-gold-400 border border-gold-500/30 flex items-center justify-center mb-6">
+                        <i data-lucide="check-square" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3" data-i18n="adv3_h">Инспекции 100% Качества</h3>
+                    <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed" data-i18n="adv3_p">
+                        Наши штатные инспекторы в Гуанчжоу и Иу лично проверяют каждую коробку до погрузки в фуру. Бракованный товар возвращается заводу.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER / CONTACTS (ALMATY SPECIFIC) -->
+    <footer id="contacts" class="bg-dark-950 border-t border-white/10 pt-12 sm:pt-16 pb-24 sm:pb-12 text-sm text-zinc-400">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+                
+                <!-- Col 1: Brand Info -->
+                <div class="space-y-4">
+                    <a href="#" class="flex items-center gap-3">
+                        
+                        <!-- Логотип PROVANTRA (встроен в файл) -->
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAVYAAADcCAYAAAAr84mJAABoWUlEQVR42u19e5wlVXXuWnvvqnN6eh68QRCUGOeKDMpjookvGBUEZOQxdKuoMRoealRIjK+ot+lgHr5joomjXg0XdKR7BhCUyNWk8YWAzcNkvEnQhCsPR96Pmek+p2rvve4ftXedfepU1anz6Olu2Ivf/JjpPqdOVZ2qr9b+1re+BeDDhw8fPnz48OHDhw8fPnz48OHDhw8fPvoN3FMfRETZz2KZz1cVNsMz/9YAQP5r9OFj6LjA3PsMEbU/LUsQWB2A5QYMMfP51Mf+elD11y318V5apH1eLtcrOeeYZcAWTRKkzOsIEf19uFjAOj8//8x6vc4ajQbU63VyLjL37zA/P5++Z2RkxP4M7d8LLoJKN9j8/Dya7VLm522vy/usovcWbadkfxfyZij9bu0xZI7VPfcd53l+fr7SMbvvK9lO2feUt7/Z/YORkRGam5tLX7NixYpu13Lb583Nzbnv6Xq9dPse3XOac55cgCIAwILz1XGt5533ou/CuTa77Wv2vsrbHmb+LwEgAoAmAMwjosxJlhgA8FtvvRWOO+44jYjKWaUKu52nEgDjHshQGSJqKeV7EPFjWutdiEjmpNsnnk5eSpA9+eZ1iIgAAEhEiIhARPZi1Q44U8mx5R0rmX0pOy+Vbtjsdsw+DuX85l2Q7rbN77PHgRWPI/tZ2c9pO96c7yf3pnSPP3Nuir4jdD/b+X7bHr5mWx3bwOQXmHPe2q4r8/dCuiqzD+lxOO/HLueS8r43+7l213OuD/dcdWTk9hxmt1kAhlC0D12uY5uVMgBgiKiJqAkAOwHgUUTcQUT3IuKviOguIcR2ALgbACJLFZh9t5ktN3+kAVbtgXW43CoiolZKfYwx9j6l1E4iEgAQZp7q2S+76tIfK+yHe5HhABkhVswascLPe91+l0NsAwaqeP6wJMPq9zrp53uigqUzlmSBpUDZ4/5TxeU69fHdVv0Cs2C4UNdpL3QAsiTafimlJAB4DAAeRMR/11rPIuK/CSF+AQD/7jyIAgOuseFqyQPrcME1QMQoiqIPMMb+kojmnacjZbKsoqxAO9lNt0wze5HRAvJ2S/E7pSG/HytQDt3AaRjfT95n4CAP3S7UEg7pvJbxrpjzeVSBq+235tDtAUeZ/WIF3zPLgq6U8hFE/A9EnI3j+J9rtdptiHivgwV1AIgtXeCBdQiUAABwRIyllH/GOf8LKeW8w8GkgIqIrFtq5n7BWCFlyVvqZpZlld5b5XVVl9l5y7O8zxh0/+zn9rLvRe+xaXE/2+z3+xl0n6u+1v2ZvcbKrq3svg6y771+r1WOlYjcRASrLnucBMalaVjmNcqh4iwdxznnNfejpJS/AoAfIeK1nPMZRHzA2Y54sioOcBEUAQwR4ziO/0oI8QEp5W5DCbBuoGq+UMq58FjVdbKb5tqLLbuG7vJ+7fJ6Re8vuzHz9qHq+n5I30N6LtxjyB5Tzr+p1xt1GPtWEQwqf59F10DV76Tb99jrvld5bdH30+Uaoww4Ytn1mUlY8jJg5txD2QK0qyLQBng157xuP0JK+d+MsauVUlcGQfATw+FyqzR4MtEEiyG3QgAQBlz/XgjxdinlHACEiCgqgGrHUqjbTZRz8XQspXq5uHu9AQven5tt9wrS3W4U90ao8gDKnif7nlzeZQHAtewB2AvgFJ3DomOoco4XAlirgGz2Aeien24P7uyx9vD+PHBlReBecE5dnTkxxgRjDKSU84j4E6XU16Mo+taqVavuN68fhaQQFntg7Z8WQMaYiqLoH4QQb5NSNg3g8l6AtU9wqwzMeTdwt4uyShbay83Ya0aWXQr2AqgF28BeMqUqD4uKD0Fd9Tse4Bz19X2VLLt7Pt/uaqjovb1+l4OudNzjcZIA1s92HXpBmv+HQggOAKCU+i8AuExKOVWv1/+diNhvfvObkYMOOmhZAywu1gcbfoUQUSmlvsQYO1dK2QCAWtUMtMdlVEf21euSs9tSsmh7eZluL0DQTzZVdL66ZcwVgbKUu3PPdy/7XkD1YEXgowK5EQ4JWNuOJ7sC6IdKqEJNDJJRD0hB6SIlRB8PDp2T/UoAQCFEaAD2UUS8NIqiz42MjPyXSb5Ynm7WA2s1zpUDgJZSfkUI8Sal1DwR1YqWoP1eWEVLoKrL7JxMqueLrJcMDIakueqW9febzXY7b4Msh7NV+T6W51kQHJi2yNIqw+aauz2Q++F9y3jkqhRLnuqgl6zZ4WJZ3vvNPSEBIBBCoNb6Ia31F6Mo+vzo6Oiv7ep2uakI2GJ+uHuyhBDnSSkv55yPAEBMRDKHJB/ks9CpaJdyRBWynjJJWNnF2ffNQSaq8mldDscWCXGQ85mlMoYBZNgKZv70w3n2lTGWncsM74v9fAfdtt/ruazyudkVkRsVvwf3tdinFpaVfA4DgMAkV5KI9hNC/Fm9Xv+xlPJ8C6p33XVX3YCsz1h7uLDrVuKhtf4KY+wNjhSLVZFg7aH9pIXMNvtZ8nXLUEt+l8vZDZJV98iJ6n6+04X8DhYqC++TI83jtjvohyqrkwH3GfspzPWb2RNRbNQENUQErfU/K6X+PAzDHzj1GSrqSPQZa3tEhhIgxtgfaK2/JIQYcchu6ucmKcryBsnS+s1IeskwCiQwPe9Tl5uuKOPOVSpUPJe9FJpwob6Dfr/zokzObFIPAaBYD/uLBSulXr77XmkUnW0XtkU1+2cQKq7iSzkACKVUJKWcZ4y9gnN+vVLqU4899tg+RvO6AhKJps9YK5780DyV4ziOvyiEOE8pNWd+zvusDuseOaGeALSgsIPD0kgWbb9MktVNspU9J8PkIoeRMVZZ/nar0A9zhVOVmyzj8asqJaooRrodX69a4Ox5L5AolhZfe+F6K3KyrhcICiECrfV/Msbeh4jXEFENEu2r9Blr94whAgBNRFwI8UdSym9wzlfYPuMeeB3qtbjkFk164a7yOKPs76rwWnkXbwE4Fm2HCv5e2FhR0MbYNRMsOz+DrBCy56no5qzAD7IKqwfdC8delMUXXRNFfx9SMYoV/b5Pbrb0oVzCzVKVFVWV7yynjdhyswEAMCllkzH2P7TW34zj+PMAMIKI0ngR+Iy1qhQLEeV999234sADD5zmnJ9qdK5hVZlIv/zdYmRuVfiwMuF7XndUtvLqgA1100p269SpyuvmAbqj9uj6PZVxtt2kWf2oPYYpc1vIDLpHFQhUyXZ7Vbpkr7VhN0XktfVqrSNE5JxzrrW+WUr59lqtdjsR8aWmGliSwOo2EQDASqXUFOf8JCllExFr3QC1X4DsR+dZRTdboRMMuoFWj0uv3CJHL9tYAC6NMsBX+UauoA1e8Fbbqp1RRX4W/a6i+s1si1qWS5QI/QAr9NMePkiRzbxeGmrgcSnle2u12pcMXaiWCsAuWfmCY8ywi3P+WqXUd4QQNSKKi8h+SPxa0y+2l4syB3RwGAWRXpe/JRRDtwuPnNcVPly6FTx6WLZVomMy8insVbJWtpTOfFfYq/SpTNbWK0dYsLx2AaP0WIt0o0XHU7CPVGElg3nb7iejHoTiyBbZ3FNf4W1cStnQWq8Iw/CLcRx/1prCGO7VZ6wVboARSNzL91JKTXPOXy6ljBAxzOuCGeayq58ur7LMdJjZVC9tloOej178CwY5Z8P4jqpKkroViapm971k4IO06A5q4FJ2nP1K+/JWDb36UeRk1FSBHgJHTURCiBGl1NVzc3Pnr1q16iEwXiQeWKvpXCMA2NeA6/Gm/TXI+mXu6ap2iesQDUOnWdWjoFsLaj/LzzyFQ7+toAvBQ/fCIXY7H/22kA7zGMsq+mUqkQG9IDravQfw30DXAa5XD4YKNQDKKdISEckgCOpa659EUfSGkZGRu4goNMVwTwWURBMARgDgUc75mFLq+0KIuhUTQw9zr/rRZ2Zfk7PMzuObsMqypluXTRWaYFgdX0XA4v6sl4LOMB9yFeiAgbrb7LbyjrtfwCq7vrrRDWXXQRUqY5AEq8p9UfAaGjQ5qaDocLsG0cgwa0Y18HtBEHw3iqLfQcRo+/btoc9YqxWzBCJGRLSvUuoyzvkpJnN1O7SGWmzqpWpfsOTUFT1m+3La6vYZ/Wy/7H29ZKpFS+NhUATDqtgvVjdeWYbcT/dbxS6soa3s8vxeocT/dZjnNM/o3jZxBEHAtdYPRFH0upGRkRkiChaDFlg2wOqc1AARYyJarZTaYqRY82DMsitau+Fi35DD5l4HNXgZghXiUPjcJXatZWmYyvxtLw0M7nW5kA+Lfq+RATyC9YDJTj9OYVIIIZRSjxHReBAE310MWmDZ3QSIGJsUfzfn/A1a6xnT/hpXfD9zn3D9Vvtti98grbT9UAXdjmtYpip9LOn7MaXZYwDZy3eSRwc4xjUdkqZejysHnFPDmao+Cwt5LgukW7attTIdZI6zL0VNXlGwov5cSCkV53wvRNwWx/EpZpUb+oy12hQCDonE4gCl1Lc45+ullLGhC7AsUxiG9dueytCqti+Cj6Fl6VUUDws4OaFrltdrJjjIjLhBr/chZK1UpRiZQ1kpxhgHgF1RFG0cGRm5YU9mrrjMbwxLCzxDKXUt5/woKaXMG/FSIo8Z+oU2RA6R9tTSek94xS6za6tnZ6dBO7mqgtegypN+ru9+gDWPSlkouiPvftZaK8YYQ8RHlVKvCcPwx3uKc13WfJgB1RARfxVF0Uat9W1CCEFEUQFIYWbpzIrmaPeynFvAavgeaVLotRtosZb0e3LfstTKIP4RPXCGlewx3aaLXpsfej0HljJzR7NkKYEKvf8dTSoLcB11NIkwxjgRSUTch3M+1Wg0nmMwI/DAWsG4hYhqIyMjd0dRdLZS6l+FEKHt0HKX/UUmIgOYMrMFPC4sezAsBJdZVUK1VLPaXo1uBm3T7REcuhq2DzhxodJ56OUcuMbeGRlYh1KkillMJpGhihaQA43GZowFUsqYMXZwEARbdu7ceYAxego9FVCNcx0FgN0A8NtKqWs4588xUqzQWo/BAAPRBpmXNIQ5Rb1OWNVPpuq8j8Xh14c1kLFAUTH0a7RoVYCIoJSSQRAIrfX1jLEzzENOLpS3wJPi5jNO4nMAsAIRfyGlPEMp9UshRB2S5gI3a9VDlDf1tTwss+DLPqXLlnx5bX5lNnJ7qhi0EHSBswTVg2YxfZo+D3UUy54YCLiQK5ge1QGlwv9uCh37fVe1KMx5PyAil1JGjLFXSSn/DhGbAMBNUuaBtcy0BRF3E1FYr9f/U0p5mpTyTmcSAQxrfpYrkRm2U719SY/ghIN0AQ1R8oULTBdUNm4ZAnhht/lXg0x3WEAH/p7mefVKDQz6sMibG1Z12kFZPcS5vHVJR1uglJoTQpwbRdFFRiHAPBXQwyQCw70+R0p5jRDi2cbPVXRrIqjq4r/cltrLXcC/VDqtevA9Hdr+DnMO2pOdAunW6AIJLSgRUWmtTwzD8EYiYo6bngfWLie/hojNZrN5FOf8W5zzw6SUEQAEvbZ1FgzcAy9P8gFe9wt9Alwl45eFeEgQUcP4Ov+Mc348AOw0u6o9FdB9WdokonqtVvs3rfXZWuvfCCFCSJoKelmyswIpDlvqkqHF7HbysTy1u2VcZy8Al2fekzVbWYhrtxtXS0QKAAKtdZNzfrSU8hJTowl9xtrHmJcoil7COb+aMbavlFIhIu9l+FpR0SBvAkDJoMGO8SZF/+/mnVnm4A4VXN3LtltkUbhYXWCICEX3WD8fl92W3YYpchS+rp/9W04ZZsF13bN5S9kwxYq2jlS1gFY2bLMEmG3hWSMiN54CVw5zxAs+RZ7EISJGURQdzxjbyjnfz7S/sozlYFlhpMzJh5wVgM7ZhjueA0t+1rcGMmefsj/P+z3L7EsbtkLvhb6iY6GSa49K9q/bsVU9d9Bl+4PcJ3oIBbW848cu5xArHjNUuM7IGT2dLRBmgZUttqduFvTzhitmur2gYFSRMsf1KyHECQBwz7AoAXwKLXNqiNiM4/gERNyKiPtqrVUGXArPT9WBZ1Wzm+xr8x6u7ms8lesjL6vOXjt52XNRRu1ui4jsH20eFjqTMLCqnWGDTuaoAKw6j5+tMjo8B6AbQogRKeWlQRD8gRntMrC+FZ9iF2WAiHGz2TyGc/5czrlSKjl/nHOtlCLzd1BKMecJnj1fHAAY55zM+92MADnnqJTCLmBdlBnozO+Z1pozxrAo29VaI2PJdWj+Tpnt2VHC2W3oTDac7pvWmjHGmNaaF2RklHMNIWOMtNbusfEC9yt7k3LzOXnnBbusFtCeF601yxwj5hy3fb17riBz/sCcv3Rf3N+77805LqzwfYOzLbTnyu1oKpOamUwLne+5Tc9trjv3WN3zkL0+CADIXF8rAWAfIjoQAPZhSQAAgJRSAoA0S2U+zMkYw1bd9DN2hoikuW43BkFwPRHVEbHhgbXHMS+DnjQfPobNEztA7bZjks0qLSDmva6Hez2XFjGr5hoA7AUA+0opD9RaH8IYOwYRjwaAZ3POD7Wvl1JGZr+CquNXyqYW9ytVG2IHZSSECKWUPxFCvBKSpiJt6DAPrBVbX0VFbq7fc1n2ZdjsTS1HbMjQJrpEacLuueceAAA49NBDqeTmHpS7XRJxzz33uMfZLbOvbFwyIGfbrR6Qfb3KAxIiChqNxjOCIHgBEb0cAF7JOX8GIoKUksy1zHJ4TpcHZRWmG2DV2VcwJPc3B/QVACghRE0pdZ4Q4su26O2B1YcPH4MmHXDxxRfjxRdfbLHBukA1LegS0cFKqVMQ8RwAeBljTEgpY0vrZIT4bRRG1SX7sDwKytQ4GT269Q0QRPRLIcTLAOCRooeNB1YfPnwMA3ADR/GiEVEad6iXxnF8IQC8OggCZpQ22qwK87hhGoaTVy9jYrpxudBe14iFECNxHH8kDMOPDtKR5YHVhw8fVQZ5AiJq83dmszkiYlLKExHxvZzzVxh6wB1Nz8rmhvU4mDN3qGcXwKUiw/KM7Mp97X2c8xcDwK/7lV95azkfPnxUMTjSzt+lwaURABBBEFzPOX+1UuqtiPgLY3ykCjxXsUKHFXVLBrOZaBGoZicgFIwYtw8LDgAx5/wZUsq3GxqA+4zVhw8fe5QmMABrzY0iIjpQSvnXnPM/0FprIooRsdZthHwvY9X78VSuMBYnzV7N9u8TQrwIAO7tJ2v1GasPHz4G8UEGUz2Pjc71/iAI3oKIbwKAR4UQNSKah2IVSSU1RJ7dYJkvb54/QZn/gP09Y4xrraUQ4ulKqXPMMdYsHeKB1YcPH3sUZBFRERE3XY6Xa61PlVL+q6EGmr2YZ1dt7V4IkyFERKWUJqI3EdG+0PJz9sDqw4ePRQFYZZzlRsIwvEUIcaJS6johxAoAiMr8IMoM0rOdad3MsZ2Bi9iHQQ833VjPjaLotH6munpg9eHDx0IA7LwR2T9wzz33bFJKTQsh6kTUGHCQpZ0U23PXVY9Ai8nkbDzHTHXtaYyLL1758OEDFlKqZWRaNSnlpUKI19ohn92MrhdrEoIzz44g4Y5fEQTBzZYl8BmrDx8+Fl2qZQo/8Y4dO94Sx/G3zZDPqEr7LuXEHjSNj4QQI4j4OqMKIJ+x+vDhYyllrtwA015Kqes45y+UUs4DQL1LQUsXYVWVkdvQx/gkN2M1Rtj/IYR4GSI+5HgV+4zVhw8fi1/UgqTV9dE4jt+otb6bMVaHxI6QSt6Xdm5lo9tI7qwxTLfsNWesC9NaRwDwPwDgxeZn9SrSKw+sPnz42FPgGgFAbWRk5Jda63OJqGkAkspAzuVieylOFY0vKjPPdl5jVQdaCMHiOB7vxYHMA6sPHz72ZDSJaGUQBN8FgA9xzgUAFA0A1JYK6JUrtYWvnPbVqrO2LMgGSilAxN8lokMg8UEAD6w+fPhYat1au4lIcM4/G8fxPwshhGl97eiysvKqqoWjfqRYrhl3DoBzItJCiMOllL9X1T/AA6sPHz4WA1wJEVUQBO9RSj1hWkk7hgTmmGZ3HZPdB6hSJkvNNiKQ0bVanjXwwOrDh48lWcwyDQQ/I6K/4ZxzIort+OqCKbHYrbmgT1BFAMAyoxatNRDR8US0EgBUt2YBD6w+fPhYlJieniYiqgsh/kYp9X8554G1G3SW5dit3bWqdrVAD1tlu0xrHRPRM6Io+m1ThCt9j9exwtC1etZp3fIw8SBDyXz4eJLfMwIRpZTyDzjnX5VSNu0UZFcR0KMGFUtMrzukXFW6vIioYWZivUMI8QXj5KU8sA7tQgCcnh5jAABj+z83PX83AMAzn3mCqD8ecTjwQBCixgAA9nv0rgjuu7lSG9ytd+7A49Y+jW4AgBOGtL+33nkwHrd2LSV7OLxwt3bCCUcSTANMA8DY2Jjlz/zDxEfV0S8IAPU4jm/mnB+ptY4h0bziMGZfFYze7ql5wJnk+tkgCC7qNrbFAysMa3p4dpAoFjmdVZxQvIzOAbJkRLOKGQCwG264AU444QYNFwNMH/l/05My9vPnEk5O0jI8SB97YCR9FEVvD4Lg703WGlYdrV00lLCLoTVV7N5Khw1yzkOl1A+FEK+CxAaxMIHwwFp9njAiMrrjyj/9w7jx+DpktUdWrDkwJi0lASpE0ATEEZggAkYEjICII8YEShHJnaAhQiBUGhEZMCBGxJAQCUEjAigAYkSoNCPQxJBAKSAEDcQIIVl6IBISaQLOCBRiYnKWVFQZS75o5UzY5sRIAQAjTcr9NzNVWEJijJGMlUZGMtFmM0LUiCQYokaFhAI4aNBKa9CckZZxNEd6vikBlRDUrK08dPe6V314JwA0uQjntYrzKg1AP/1CcCsAHHfcr9XFFwNMTk5qf4U95Wdq0dzc3CG1Wm0WAPYnIqgyG6vXiQJVADXn9dr8YQDwsBDidwHg/5mpCcoD6xDGUNw6deFrOcbfGB2pQTOKARGBiICAAAEBEQABATDxdtSU/F8pAq0pSfDsa1pYk6Rw5rUt6t35u0lmycn2EAFzfkZERbPtCRCQCJKKJgKmH4utnFu3D6VHBKDkkwgQkvcnFzSgAiBNrbn0MYraLiB6BEnfp1X8awDcsfKAZ99FSj8QzT32//gaft9RJ35sF8mWznpiAtjYkRPiyDGQiB5kn4oxNTXFx8fHVRzHXxFCvEVK2UTEWlVBv7tkHJYjlrN9d9igEkKciIg/NobeTQ+sA8bExASbnJzUt07/ySs4NLYR4OpY6pgB8ATiOr5mst65hGD68sBgErawrvVt2NcTYFIRRUq3y81lY3ANkeyF1HpvxzYpA7aICVoT2I4U0DrZKsOM4S+i2ShS+jnJj9Huo1mDARAgMgaYPgkQgTEGjCEAEcSxkgTwMAI+yMMV/6XjuRtHD/gftwbByC+e9dK33W2fHEQap6fH2djYFPU7etjHskxcAkSM4zg+TQhxrZQyQsSwarbar8drFX2rA6oRY2yEiN4thPgcEY0g4rwH1mEsWX4+LXDdOdGtU+86mWP0dQDYO5ZKIqIo/IJS0MMkWS2lHEgDJSli288TxoBMmtm2HZNx5s5aT5JntGjcXhWlFj9EKXgiy3stUGaEMJBO3k8EaeZLZEAcHO5Jpw8TwEAIJhAIkCFoQpBS3sNE/adBIL43+rTn/8tv/e4f/CdoBYAM6Ke3BNP//TE9NjalfTHsKUEHMABYI6X8qel00kV0QB6wZuZaUY7QvydKIEdJ0BBCrJBSfj4IgncS0SgAzOclAB5Y+4i7b7xx5LAXvWz+psvOfWm9jtsQ2P6R0hKTSmYnUBoQIyQ0A4Exh8MlACIX7Axo2bdj+jsEbrcLNvO0Aud0yZ7JYjNA2v4ZKXOLbRlvZxaOgEny3Q6s6dVLJWoKsuiqE6RniESITNRCDlIqiDU8xpH9UNT3vg5F+N2jTr34v8BwxTS7OZj+7731+Pi48lfgkxZcQ0SMHDpAISJfKDPrLGjnDCdEVz1gJFd1KeVUEASvJaI6ADTzHvoeWPv9YrZPhbjuddEtWy54kWD4Lc5x7yhWChE5mYcdg9aTzM0Iy0A1fV0LRIGAEME8mQ1wpk/nJMNFB2MB3dnrCClYt4Fz5t8uqOZaslnCF9NMgDqBusQoIyE10Bwas1xIQviSMnwFr4UCSWuIFTzIOPtnhvWthxx5xv/Z/4iX7gQgmJgAdvGRUwhj4xrRqwuepJrWtzDGvqKUigAgMKCms0ZWg0wYcDq8KDvJwPFjZRmZViyECJRSP+GcnwwAu4qUAR5YB4i77pqpH374Kxs3f+OCl4UcruLI9mnGUgIacbMDPBqIsaKZ5jnZagJ0CXVgQa3IgzKH4OnIWjsANCeDJQRmM9/2ZX8bqEJ+FuyQq8mLsf0hQWSRn4BYwQ1BQKA1gEagoBYKiKUCQPFzwfk2DNZsed5rJv8DAGBqaowb+ZbnYZ9kZtjNZvPZnPNZABgxAMdNVR6zNoIDAmtb51VGXtXRlUVEmnPOtNb3cc5PQMRfFhlfe2AdMLZvnwjXrfto9JOvXfCSkRpuBYIDY6maCCgQgDQmprh5mSpk/NFshmtBNe1I6P/ioTJghVYFjcr20QJ/G6XhBCPU5HK+GfC2lHFb5lz4WYY6AdREoAGIOMdaKDhEsXqYkG8L63t/+ajXXPLT5PxPhUce+XOvJniSUAG240pKeQvn/CiTtfIizMrjWPuxF8xmsWXtrkQUEdGLwjC8tahRwAPrUMB1Kly37vXRTZed97thnX+TAe0fS4oBSVQBVRe42gWfSZbY7f2Fy/ZMxpoFVaz4/WeBNY9KcP9NYBzWMVWh2UxWZ/cje2wt7rjts5QmAsaQBZyJWOo5JvhVbGTvvzv6tI/eDEBJBjs2Boieg13GHVghAHBEnIvj+H8LId7ktLhiEbBWrfDnvTZHslVlm1pr/bIwDH/sgXWB4847r6utXXtq86bL3vbSsMauRcQ1SuoYsLvFWBtwmcJQEfBUzlLJSlAtOCfJrwW8Xrbb0skWZ62dWXGrqNbGX6VFLye7tfvaKnOZfxMhgQZEasl4QQMRDwIeKEVzjAdXQn2fzx192p/fDKBh+/Yrwgcf3F9v2LBB+qtyWYLrCCLORVH0gSAI/kpKGTnAShmP1qwSAHptge2nYQARkXN+MiJeb3lhD6wLemHMCMQN8qbLz99QC8XVgLhaSqUrPVWBdBaM+uwQozyVwEB0gnsBu2oEC9q5NENxVkw5mWuWnki4ZReEiYxqzKKsAkIxUhc8iuQ8ivCb4aoD/+bIV33oZiLNbv3iBXz9BV+M/VW5bPWsZwshpqWUcY6x9ECNAANys5IxJhhjmxDxSru/4G0DYQE9JjfIqamJ8Hff+KWZCPhrEWBXEHCWI+NwQYZavKIjsO/jYkm2Q2R7EoYhlM6VXFFLR5sn4UqaDZCVPSDcwpa7DXQ0ujnkFtqOMQQUwAjnm1JponrI9euaj937L3dsfdcXfrrtj5+5/oIvxkRTnGjCX+PLK+wolgeUUtJmq8aE2v7BbvpTMzMrd+RLv1ys094KURSNgPdj3XMxPj4Z0Z3/WXvh+Oe+Iyl4HRDtLAVXyrSW9mjU2zaVEpAloIfM6YXFfjNfAtKYOKwAmdbV5GOwDSA7JWLdP9IFVLIdXNk3trXmIqZ/qHXdIgIHRJhrSEVAK2oBXBDo+Pt3fPODfwgwphEnNU2N8W7GxD6Wki0HgNb6ISJ6gnPOqt4HFlDdsS7Dam91QJ8QETjne5dhqAfWhchc165t0uxPg/Xjf/ftZszHtda7wxxwTZbqCNTn95C1QjOdpQMtdQrl/RmKIqUEyCSZWF7t7waykGk2MMdi8bcF3laX5ionEs6Baw20ay5WAPR0jB//8r9e9cdXbv/eJ56L49MKAIAmfPa6XKJWqz0BALuhwlTUzFRs1qMPQC/3GqYEF8BeHlgXA1zXr4+3b98SvvCcf/iOYsG4poQW0B2Za+Jp0p5l9g6uiIbzdPSm6c+Gk0cgdRoF2zUZ9vJwQEBG2PlfS+ea2tF0KASsQDb/XCQAGytNTUkxA3lG9MhdP/rZ1gvfCzfcwHFyUk+NjXF/dS79jNWAaiOl9nu8J7ppvvNaXMvANtveioh1TwUsUqxbNx7Nzl654nfG/uG6WAXnAMGuQHAGBJKAdEfLaW9WZsVPbidr7DdzRUN32s6uZDsG7MzHt/G4AOj4zFBCHaTOV7ngarlYV0+b0A+Q0hquCsH9r4jDJUj0wAyIN5pSaqVXC64/fusDW//559/97DHj09NqAoB57nVpx8MPP6wAQFbJWPtZ4WUbBVwwLgFY9/2hB9ZFjPXrXzN396++NvKC133uWkW1NyDATsaRE4Fq4xkrLk1sFudmcwtpYQ0ZC8LyJoLM+8x7C/c1Sag7NLIurZEtmrnbLQBs3aqOJZqtuUbcFAxe1nzsFz+4Y9tF75pEkXCvNBv4K3Rpxr777ps3ULBrkkEFUQK2ZSYvbiZLGcwUHlgXOQ47bHye7vpu/bjxT1/TjNQYAMwFAjkBqOT+B8prFy26FIyBqyUl0z9DWod1ZtGmeJVmsJl9zfvsVgbQeeFnj8aYJKLj4EUIoO17bQusG52FNiuHINbZCIEilioipUYQ5N/eMf22K2av+eR+iC+It09NhP4KXZJRB4BaiUFKprzQklE5I6tTQOyFU7XvdwCVsiCstfZTWpdC4OEbGjQ1Fb7wDV+4XkZ6DAibjGGAACqt5FdeolsZlIurC858oc1Es/vqSqQ6gNPlQ1t2AYWcmAVFYzxD9rflGYvzp0NXm/wcAZgmUHEk5zmDcZj/rxtu/85fvmDd+GTkFQNLMtYg4kqtdboEzwNX1zfABdle5FllVG0JHSA9sC4VcB0fj+6887raC974hX/SGLyRM2ggIkejjetGAdg/tthlAa6bZrSXbXf4uqba2LYRBVQk/u9QKrSAkghBFz0EsE1ehQ64lh8XGjfuRFnQ7gqW/N2dOQ9IALzZlHOg6Dm4+75/uu2qD7zDGiX5K3TpDJKL43hvIlrt4BSWr3wQexkOWKUhJgvS7v4xxna7ulsPrIsca9ee2ty+fSo8buyzVyo+8kbOMWac8e6caUvH2UayEwygUzUUAqVJZ0flP+U02/1aoLtht6U30BagdBX6ILcpoduxYJrFuw8EJGOA4xjdpMphQGySUnvL3Q+v8Ffl0gPWIAj24ZzXtNbkLGpYGWfajwbc3VbBdrHg/Y95YIWlqBbYHBx31qeu1HzVWxnDSDDOdCkPZGVZ7a7ofXWRWJMW1+mvjaZsl6W0lumge5O+tjjWFu9pMwEqVAu4Raoi7tgqD8x7WgYwVjVA4HQyJA8NhggIqACBAYJQSr/xBW/80icnJiaYn1CwtIBVKXWIuey0e41nefZe9ahZHhUcDjZ7P3W5v3aWAa/w3+PixHHHnS9p+94hrhv/+m3T7yWE3ZcGggVS6gJvgby5AwNdvs6YwszFibZ3wbnIIJ3CVZqtpubamBpzdyIuptMIyvoRSjOQRDuLuc0GrR5Z0mDPpcnNGcOAiGLS7E2/c84/bKWJCeY9XZdUcACQiPisHnSv2KcXQJa7rfQerTUQ0aNlL/LAumi+AkgAECVm2a/YcuvW92hOuy8VnNekahm3tM/M6t4vmjf/Kh+5XLMT7Lw+sWUM4/TuY1X1gZVLIQDLdbSyXG2eSUynmKDNXCZbyLP7ZbNW81nONFpAAtCMIedMzLP6mrHnbfzodTQ1xdGPeoGlOP8qjuNjGWNV+NDc7LUKuDrv62n3DD3xBLQmuHoqYKnF4YdvaNx53Wdqx5396Ss0H30LIjQEZ6321x75xiJQddf5rQyOHO9WzFT4i662tvncqea0ja+i1vtdINYO54npZO3O/cU+ihCWQkiLZe7YGSDNGcMgCOLRfda+/nkbP3rdzMTxwoPqkox4586d+yLiEUopXbXDihytqf15t06qNp+N6tcbAkAcRdHOMo2tB9YlEGtPvbBJ9LPw2LM+s4X4it8HSMBVE8UdhiUVMsb8QpiVI2GLCmDYkigZZy0CxxEoF/SQEUKmo4pSVtTpcsWOKbNJeso6Ms4KF3WbpKvkHNjz1Po/SM4YcI6qIeHNz37Fu66ZmhrjGya/7/1al2Cmioh6ZGTkeYh4ABHJQWwAXdDNK1IVTW7t8jkMAHYLIXaBl1stB2pgXXTXXV+qH3PWp6aVDl5PALsFQw4aZPp9U4VqPLWLRdOLKo+QzGSebgMCgnEGIsq54BALM8aOqm1nFpuYeZviEwJV7jpLkmNdptvNeLxqxoE4Q2xE6twXjP/tNzZvPj8YN6YsPpZm4QoRj+Oc1+ycq27XR152ms1Iq3gJdNFLawBQhp54MAzDR33Gumxogbc07rvv6hXrX/fZq+NYb+KczTOOQcrjYLVMNascSKX9aT9+jh0ftmegpbIWJ3vMbSnt4IRtgd5dtrVrY6txtlZFhZTnQ2B9EpL0nggRGDIGzVi9+YXnfOHSmYnjxQUXfNFnqks4ZmZmhNZ6A7QKWdhDZomuKVG2wt+vB6sztVUluQbdCwAP+ox1GcUhh7xm7s7rrqu98A1fuF5qcQ5n2OAchUbrEVBCBVD+UrkNBCkZ/tf+O9fT1bwWnY7/zGO5SgstthmototwO8xnemhucC0Ey0JwxKAWqPqaZ5/zgtd/4bKZieOFWf6Tv8qW5uhrAKATTjjhWYj4EimlAgBRNbOswqsO4LZFrmaVc74DEWMi4kUyPQ+ssBQ511OjmZkJcdz4Z68hPvpmQJSCIS+jAqwJdRs45pmnYOcQQNdJCvI4ywRjtVuZzyoE7N+dTitdDL6YtsYitOYXdQfqVreZbbHNfgYRaY6IIghUsObZ5xxx4kXbZmYmhOdUl4VSRiulXi2EWAkAcUcXH1UyHqIFANcswP6mG356YF2iD/ANGyYl3Xld7ZizPjFNwei5AICcM5ZXmGr5l3bLIlsWfdmsrz0LQMwM+wMAZJ2fQWT52NzbpJAu6JRXdbMZzNPhdvBqpvrPGAM2+ow3HvHyd22jqTG+YcOkB9WlH4qIOABsLMEmLAJXh7paqNZkBABUSmki+nm3F3tgXdKTCE5tzm4+PzjuzE9eBmLFWxhizBljFZ/cpT6rZcRmCoiUU7W3Eq2MR0G7vtSCcP7ModJ9yi2WFQ0cRI0E2gFVhgggCd965EnvmaYp4Dg+7cX/y2CAICT+AOsR8fcMDRAUFJwwrx21wgysSjaCJZQDAYAgot1KqZ8ZbwnywLpMY/0FX4zvvPPbtWPP+tSlxFe+lTFsuplrK8NDrMpVtlCs2FGrlVXmKQAKMtHEEKWd56qow23nYLGnVkXSJAVjTHAxR3zl+Prxz/3j9u1TIY6D8pzq8shWDVf5DsZYDUqco7KWgHnt13kqAOh/mKD1hUXGmACAR8Iw/LX5mfLACsvbuIXumqkfc9YnLke24i0I1OSMsWQEtC2wU8/m1+1O/0XvdWQrgMyoXbXNRovHtRg+lJIx1sPkvVI9a0JnaM6RIWO7YMXB48du+vhWmhrj69aNR/7KWR5FK0TURHQ0Im6SUkqDS90yy3RYYN7rijLaIlAtymTdOVqMMQSAm6enpx+0Ki8PrE8CP9e77/7GyPPP+vQWDPZ5MxA0AIEhoEyf4i25K7UtgcoA17HqaxNRpxO1oXByairAtiCbc3F2u6BztaqVMBgRCDRy4IBsno8edPbzTvnAt5OOKq9TXSaginbJL6V8jxBiFEpa7Yt41JwiFxXpW7vN2ip5vTTg+h/jFTr2vFfAMopDDx1r3jdbX3HI+tOvmJ26KEJoXEYAK4BIASamJmkhi6wlKWiTNVLWQMW2lVLLC7D9okVoA1Yj6G8BrDXFwm6GKT1MbkVXaUBU+F4iYgyZEIFkqw99/VGvfO/1MzPHiw0bfPV/eQkBcD6KopcwxsaVUrGVWOV1U5UNCMw+wB0VARYAcJvZUdl0V9suq5RqEtEdVQ7MZ6zLTI5yyPrXzNHsF4L145+5CsLRNzOGc8iw1d3U8qVoSZFSPWqZVR+1qQGyHGzHk9zlTmkBKrHUbsKdrf4zxjAUTJPY6/ePeuV7r52Z8KC63NpXTSFKIOJfMMZCF0y7jbG2wFnS59+tW4v1eDWGAHB/FEW3mH0nD6xPutHaF8Q7dlw/etyZn9ymof5ORBRA7XOmjO9fW7bYBpSOn2kWtLLFp/RiT95vjPir+Rb0Pm8r7QQDdyyrkWIl1X9ErNUCzVb/9huPfs2fX+GI/30sn+CIqJRS5wohXqaUkoyxsMcR1ywPbG1PfxkHm/ce5//Z1xPnnAHA9hUrVjxgQJY8FfCke9pPMICT5rZPjYWxnj8BBep2HyDEtD+qYIVu7QItAKevo+IWQrJuBS3fUyNGAGgBef/Zq/vejqIYIRGC4ohMBIL43s9+8xHHv/MKY/3nQXX5ma3ERPRMKeUlSinZbTSOXY7nZZquSXVRAaqCzwB16ewCAPgns9/QzRjdA+tyuygnJhjipN4+9X/DmPa7fHRlbeyJnU2FiLyTO23PSju8WhN+lNBZuRCCdk2uTe+9dldXBO0m1akF4FAz13YTFyLUiBRwziVf86w3HHH8O6dnNx8X4Ph47K+KZVewQgAArfWnhBD7SSkbJgusZNJSBpypwXpFUC6iBRyw1QDAlFI7tdY3Q4kHq6cCljOoTk7qu746UW/o/b5Wr4djT+xqxoDAy5z403Q0S5Ma3WneIgvaOqFSkDUpaiKl6qkolSf1qlaxRQJQyEiEQTivxOg5R77ioumZmePF+gtu9aC6DICUiELDS8INN9zAEVFFUfRhxthZUso5Y7ZC0MOwvwpuV7qMNqjO8oPknDMiuiMIgtur8Ks+Y11GMWFAdearb64/VL//66tW1M7cNRfFkOlQyZcltSr35HAEeYbSLc9TxOxobTOSGm3maycAmAkEVLVJgQAICbQZAoiFNEXyeZIzCDXBblxx8NnHnvKB632hCpbbqBUGAMwUqiIp5TmIeIlSquliUJnrf2bJjhXAlQ3DwtBkuoCI1yGiJKIQESMPrE+iTHV28/kBWyEuXzESnLlzd1Mioug+GrqVcCajs+0yPkHFEiBEayZFSMxaYLVGxbg3AFF25EuF0TBpscywtqwD4BE0YxgAwM6R1U8768hTPvA9X6hafpcvAMQAUEfE3XEcn8Y5/7JSSlllQI6BCpa4WmFZFtuvPSDmSLvMz0Mp5cNKqatdPaunAp4koHrnde+qsb34lpG62LRrLoqsV2VbNT9vieJ6nZjOqbZLKuc9CS9rWmaRbPMBpubXgGhNql3JVTdqINuplU5GMFX/DpcqxpBzsau26mlnHXnKR77nXaqWZWgAGEHE3VEUvZgxdjkRjWitwSQGHeDajxi2n4nFjoIAC4ytI845R8Qf1Gq1O81LK3U3+ox1SfNTgIAX010zUH/4Nw9cvnI03LRzdzMCBOECJlngQ9dGr31pnnqnYPFgwcLOLIQC26CUZiDnNV0qsO2srjsAkBhopGT4IOccBQMl2eibElA9XniXqmUZAhF3EdExSqkpxtiaOI41Y4xn+FByV0pQPglY55lbV+Rl3YwYS7l9IlBKaaXUN4UQ2rhvKZ+xLndQhQn8+dTFwUP3P3DpaAKqTUD7MGxlf21caaZglTWldudntU1OdV6X2gtSu8tVZ/OAM0PL2Sf38zpbXHOgHSnRhyXOVpohw4CDaip+7jFn/tXVMxMTnlNdfoEzMzMCEeO5ubnf01pfyzk/WEqpWOf4VXQy126AZ/lT+7qOeVZdWquZA8TlIv+kaeGuMAy/ZRy4KmfTPmNdsqBKiMj0LVsu+NLq0dr4zt3NCAEFtXv5mwlXydIcOyQpJj/ElgEgmQosOlME2pfhrbHYFjRbBa9inWk2A05HZ+dmEy2fbWv7p5NClWIMBONc6XCf16/fNLl1dnZzsH79Bb76v/y6qgARpZRyDBG/zBhb7WaqA7hNFXKuGT1qlbEsZdlxzDkPpZRXI+LDRBRUpQF8xrpEOdWLL55ARNSzV1zwtytqwe/vmouagCCsObXbkWTdplJlUqJLJWjrs29lnwiphwDLG3GS+7Q3SWrL0Yo0OgQAErA2CRZ1ZrBtWXM6DaCNcdAIIDjnc3zVwWc9f+Pk1qmpMe5BddlJqwQiakTUUsoJRPwGIq6O41jmZKq5nGemI0pX8Eptk1WV6FXzhgrm6V6V0a4+prW+zGhvVT+SAh9LZPk0Ozsr1q9fH89uefsnazXxnmYkG0ggNBIzFXps70aiBODSRNNKmQjbOFD79xw3oLwCf0f3ldvKldKyhRIrZTRViIBE0NqX9u2aNlVCxZAE53xnbdWhZz/35A9811f/l2WWGiJig4gOUUr9Lef8LCll03RaiQpcqM5kklUNUgoNWspsAos6rJRSURAEoZRyixDiDea4mh5Yl3FHCiLq2S1v+1gYivdFsWwQYYA5o1RcjrT1O3TmQFkaAFNKwFIGbUUtaDdnKavsJ0oAdEZZt4OqlWK53K27s5CzbU2kA4YaGY9g1WGbjj75fd+ZmZnwhaqlP/gPjK6TQ9L3H5kpAGci4sc5578dx/E8InJE5LZltYqLVBE2FbleDUNelWkoIEMFnIiIPzJDA3vKWD0VsGQ4VRAAQLNb3vbpMBTviyLZ1AQcO56nnXOrOoEsoQFaIwBaBtUWFFvLn+oG1KkLlpUa5l38Jot2/ysD6oAzBowpwvANR5/8vu8k4n8PqssgAiIKAUAjYkRERyilLmOMbeOc/7aUsmEc91k3H4C8pXxGPpUC7qCg2mUbBEZipbX+FgD82FAbPfv7+uLVkshUpxkij2e3nPfZlSvq7941H0kCFKzFUxpqNLX5pfJ1R37ByCA42omumUms3PCn1M1blZA0Zh7KdpsE7RNg29QrQNpmxESkBWeMMR6z1Yedc9RJ773aL/+X/nL/hhtuYCYhaxrn/99SSv2RUupczvlqKaXWWisACFvePdWW50XUwBC6qKqu3gkAmJRyFwB8ChFpdnYWB2nb8rE4gckyg8uffv38T6xYEf7pfCNWRMCgtcrvWO67XGVqUp0Cbve20raKftoEhQBlxtI578eiLpg8OoDs6G1gRESCMwyEaIq9fuuNR7z8om2zm88P1l/wRV+oWpqGKWhMUiQixuZ3R0op3woAbxZC7Cul1JDMrgoKtKNddadZ0K0KwsOiBwAgEkLUpJSXBkHwB/1QAB5Yl8ZFyxBR3bLlbR9bORK+b74RKw2t5X+rfTTfzi9L3tulfunESgeLEwUBMpdnbf27fHCgC65WleBkow64ut6uyYBNxlAIjkqsPvQNR570oWma2sQXa5xK1WXqkz2mp6fZ2NgYM94TFiTjzLk6REr5QkQ8h4hOFEKsNiJ6RUTMzITqxp0Wgmu3YlM/RapeurBM5b9JRCcEQXCbw7eCpwKWDajewBFfLme/8baP1sPgfXONWJknZJash0Lbv5zxKaVNVBaosWVa3fIPyGa6Kfpi6UA/aBdnQ2JYgZSatoACe3ESacaQIXLNwgPfdORJH5yemZkQuAicqnUp6vfGWe7XX85xK/Mndl63BgAOUEq9GBFPkFK+RAjxLPt7Y/cnTMW/q950kLHtZd1Yw+BdAUAKIUIp5f8yoBpUMVvxwLqU4ufTAa57XXTz18+brIXBhxqRlJRcoB3FHcQkg8QkiwACK6/K6RwhSNRN0MPgPjNStdNdqn24WuHFm+wcmo4GTYZ7TRsMKIFVjaQYomCMyfrqQ8aOeNUHr52aGuMbFgdUQ0SMHnzwwVVEVDcZGj3++OOwZs0a995gc3NzjIj06OioBgDauXNnuplVq1YRAKD92apVq3JXgjt37gTz2m7jQ4q6jrKdQmWdQ5izD7azyfpL2Ae2npub0ytWrFgRx/G+iLgfIh6MiE8HgGdJKdcBwLOFECPGPxWklE2zDQEAtX5BrVfjlBLP1NL3FygAKDMfSyIiV0o9IIT4hBEfDERLeWDdw5zqdde9K8R1r23+7NoPXYjNR/9nFEkJQMzFtnQpng4BNHhqeVZMXadKuaoOLrVDOgWAQ1CGMECdaFVz9sXsKEcIuOANvurQ1x9x0vuvXSxJlbWuM4YgX5ZSHmgdi0ZHRylZ1ba4xVqthkQEyVRmgJGREXIyNgIAHBkZsf9OtRvuSmNkZCT9XRmwmhUK9uEZ2gGsrQ7nVOaUS3uEYQhSSo6INQAIOeeY0XSSGUlNDqBW6tHPA0fHF4CyD5J++NUykM0OE2y7N8zv7HfFOedKqU8g4n9XtQb0HOsSWX7deusXxfr1b4+3f/vDfxTtevBzhBBpRcJ9Gru8KoLpCmn9G83VqB0Bfu57Sy9vR8OKmTZVZ4mvXZ+AUu6r7TMz2lZNinFgnPEGX3XY+FEnv/9bi1X9t8WIubm5F4VhOM05P7jgdYD41Lk1tNagtSZDBWiny4ibpT7L40vtz3us9FtX/jRDH9JSvmNSQBde1gK8FELUtNY/YYy9AgAisw3tgXUZRNLz/vb4Z9d+8Dw198hmIpCaiAECy841cQX+LVF/y2mqresqC2Rtgv9Mw0BJE0AKkOSOWelFJUDtFoImK2AMGTIehWsOHVt30vuvWWxQjaLoeMbYFOf8AJOJ8QKru2xG1aGp7KIJz3KCuqA/nTLbyC73tfNzKpAIQRXzEue4WM797zpMsW5FpjyOs+rS3AXmqmA4TIWAA+4aABRjTDHGTkHEH5ouMT3o9eapgD0Qd955XW3t2lc3b//mh8/X8w99XmmK7YwTJNTZzNM66CelISLn1qa87gJCSPWhrb5+U1dyOq+KqNdWWytlzFuqZRLZz7SgKgRniDQPvP6mdSe9/5rE+m/xQDWO4xMZY1sAYF8pZWylQTnBcwotVMV9ybmpscCYJDvwDvPA2AEr5hR/qGSfoAKoYY51XscsqjwafljFIrcgWzRmxQVqx5WqUtdVRb7WUi5aCFGP43iCcz40UPWdV3ugo+ruG6dG1q7d2Py3az78Dmg+vFnrJO1k0Dm6N3diaQeYGqPp1CMgf+nf3rKaPwm142Ls2B7l2gqWAiwCkSbFOWOcs13B6qefffSZn9yWcKrfXyxOVcVxfAoiXgEA+2qtG6YjiHpczVHWWLmqwXIWLIq2kd1e3t8LPq8ok84rjmGvq9eCsdC5htPQgzF11gilm9yqaB+q7F+W7hFC1JRSP3r00Uc/3astoKcCFnX5f36wfv1X4n/95gfPV9HDm7XWmogpIs0RXC9UYpU5qozmtFrlv5gD7WwaIMos59Ox1qk+FUr7vSXjjDPGdovRg84+6pQPXz81NcbH94BO1WQhwgjZyYCqjOP4VMbY14loFRFF5jWW32ODcoJERr1RPqJZu+/NVsWzv6/Q0+5uS+dMKc3VjRYsxYclWep5dPUgetQ2DXcPx0FEyrzuMaXU8bVabfswClaeCtgToLr5/GD9+i/HP7v2g+dR85F/0BoomUZBAVgj/VZl3xqrQvdhfN3lVG7raLtgscsTPfVVMR2odl/sR2JLgpXPvYFiiJwhNiyo0tTYnhb/M7OUBwOqpyDiN4hoJRE1oTV8EXu4mTEvm3HAEfN0x2VJTHZpmwc6HS5kGTDMuEFlK+GYM4ivJ9OTqgBYxotWOC99Uwx5lEHFiDjnI3Ec/08DqsEwQdUD6wLFXTNfrR++4S2Nn33zA2+mxqNfUBrQzPjBdrPntAlVW1P/bplqUbbo8pu2xSm9adPtFpKsyfsQwbpfWc7UyrYISLvttTk3l+aIjAnerK1+5uuOOOlPr5+ZOF7g+PQeW/47+sMRRNzdaDQ2MsYuM6AqIWnLzOUpu9yc2K2bKJUEl0wZdbPbQYDBeV9e8aiDk8zJYNs0sVX4y4xMyUrSqEtlv4Mz3gOrlm7HMS+EGJFSfjUMw7837lxDv0Y9sA45pqYmwsM3vLVxx9Xv/30VPfFFLYk0ETLmcGUZ/tPVgOZ2V2UKROhkW20XLQIlcldghKDt37tejAiOqUpWZZAZ8meHC2J615hCFWOcsTlcfehrjzjxT7+1iIYq3IDq6UEQXI6IK7XWMtPDTj0WW6igoIPDWNZW9CnFbDEpj7fNAULKAVFd4LyPFc8DZjP1vGOvYp7STztq9j2Z96fnKOe4IgOqP9m9e/efmoKiXojuO8+xDjVTnakfvmFD49Zt73kdqvnLwVjuO8vPnGmo7sC/XJFzO4+U4Tjdn7mSqda4lsEu7jYdrTsjq2WkTUIwxpHPsdGnv37dKe+/Zk9xqgWFKtloNDYKIa4AgHoi+WK8rTU4U/HPc5EvWdpS1QF2ed/jMLK3nM4hKhLYZ/fZ5XJdgO2V2yw5Nz03DywEz+vsD7nLfyL6JWPsJES8y14vC3Et+ox1qMv/DY3bp98zDnr+HwkAlNYaAXmhFZ/J+wixJVMyBc68CjACarvmb9teq8W1gn1gbxlDi6O1BTMgjUY6RKQYZwIIdsPKQ1677pT3f3tm4nixYQ8u/zOSKhnH8cmIuMWCqjFZLmyRdKvJRUBY5N1QNQstKkz1UGwpm3uPRWNK3H0u4lmHCfQwfH/UoVwaxlAm1Frv4JxvMqBa63UqgAfWPX1T33ldDdee2rj9qgvPQNW4VCkKtSaFgNzIorosr8hCLDnrCMxxr2KmnVW3PAOw5TCFfV3V5Rlr1mXQFN0ASCJCwJDt5CsPGjvqlA9cv9jifwOqVyDiqNZaISIv6zvPZnXm36zMvq5PEMBhaUFttp2nL+0Gwlmz6H46p7rIvXL1r8XFzs4HzhD5dnT8YBkANIjoLYj4r+Z6aS7kNemBddCbemZC4NpTmzd//R0ng4wu04SB0iQRgQNV4PIS8ScREJpOSnIz0CyXRMnINjSKAjNBsF1OZfjPZJx0xtQ6/+Ox2z6SO4FIA2iGGDLOHwtXH/a6577qff9nEUHVLv9PZYx9jYhWGU5V9DhrvhCgemzXhIwMCvspUuVV/Mt4zTLQcxUFPb6n0typoofWgFNSh5WtWinjhUEQXL/QmaoH1mEs/++aqePhGxqzU+98NQea0prqpHXMAIWFonRUSYk5dJvC1HRkdWarLWMWc0kyg6nk2v61FbcQ9KBcelKcMnWTZNNScAxJw+Oivu9Zz33V+26Ymhrje2r573bHODrVUxBxiwHVqBuo5mRWrEvBqhI454BP31lqpj+/Jy40C2p5XGwVCshVS+R0omHmwZOXJZdmpN0KgIP6qyIiISJTSr0rDMP/tadA1QPrADf3L37xT8Hhh29ozE6/+zRO8goAqGtFRZkSGSI0t9uqbfJqkedkShAgWB7WvXVb73N0riWdWb2Cqxl/rYTAEAgfEiv2OfuojZPf35OcqpH4BJCYEVtQPcl0VK0kohRUe8gOyW0X7XdJnAy1aX1mrxxqF/CtvH9lx11SSYdeW3TLsvBelRfDMqvONgAYx6p3h2H4edNZFe0pjPCqgD5A9YGf37DiwHUn7rp967vPYNS4XAOOKqlj2yKcN+RPAzHm3og5GWzVLqnsOGqs8D26Othumtjc92tQImAcgB4eWXHg6c959cSPF2P5byaEBog4H8fxy4UQ00S0j+n95908PEvMQAaer5QB1txOq37Aw9W+9uO2P2jVveDz+8qie1QL9MTBOl1yyDlnWuuLhBCfNZ67zT1pau69AvoE1dumLzodqfk1DTAqpdIEJOxU0s45VflZYC4gEmAVwMN0E1V7pJ1eayLoCVSJtBDIEeEJMXLI2HNePfHjmZmJxdKpMkScJ6KXM8amAGAfpZRijAV2wmc/1Wr73m495+bXukye5QKRA9h9F2m6dWV1c5yyn92t374KMNrzYyepVjnXrvSpj++kl3MWAwAyxrTW+t0WVBGxsacnRXhg7SHuuecntQPXnbhrdurCVwPtvpyAVkipdHoBELRLoJKJptgaAZhel1R52F/Jz02TaW/LfYa9LbkIVBBwBoi7oPa08aNO+9DMYjn/z8zMCESM4jh+lVJqKyLuK6VUBZkqVhm1nHWNyoJQES+Y1/Nf0K+PvZiJ9CpnyssEu4jnqZsVYM7nYR5gZ9QUWMEnYJi+q20PfiJqMMZCAJgjojcLIf7OcKqNxcAKz7FWvqknxGGHvWj+lm+885UM5q9AxFEpSSEy3tYWCpBI5wHTrqVW5trqOYVu8qsS0MXOC727o5BtIGiNZa2YqTKuCXaHqw4ZW3fyn10/u/n8YP34np+m6nCqr0TEac75qjxQrVqAKtOA5oGiC2B5wJUDLlQms+oxE6MieVWV5X6eKiCHD856xBbysXmNB1VmVQ2LQ81kyoqIoiAIRpRSdwPAW4QQ/0JE4Z7kVD3H2s9NPXG8wMnvy5suP39DvRZsI4K9pFLKmFSzMjOUdlNqsOInrO5G5WbAWRvBavxq6b4VeQ8Q6UBwBoiP8xUHjx916p/9H5rdHOD6C+JF1KluEEJs01rvZXSqomL3DeTpUxejI6jKvvbD9eYYRutu86K6mKZU5jfz3Kuq8rx5/G0Px6tMm+oKrfUtjLHXm9Eqe5xT9Rlrj7Fjxx2j+LSjd9946XnHj9SCKzXAXrFSMWKu83xm2Z4QAEZshS2VKVSZaJlcrJCZbUWGmzXC/m4C/5IdTLxTHbvAFGQJVCAYB4QnWP2Qs4869YPfo5kJsUigajPVExhj3wCAvbTWMSKGFcEQe3Wg74UTLXDAJ1ejWWWWU9bMumpGmNkeZvv0HU60svSrz1HTWAaSRSuIfh54zn4oA6pbGWNvQ8SHLae62LjhgbX0y7txBPHY3bd87e3HByFepYH2iqWOkQHvOlkq1ZKaMVXYagMpklW5rv+2c4QwtRfsmFcFWLxErNyZYvYLCS3I6kAwrgGeCFY9Y+yoV73ve3tyRLWp+gMiSgdUNyDiFUS0n5QyAgDRBaByu4KyblD9tldmTUwK9KtUpeMqC2JZp6pulf/s5xi+sZKxS55+1z2+qoBcJMmqWnDrZQyL2TcVBEFgZnVdwhibREQ7Pr6xFLDDAyuUiP/xJfM/uey8E0SAVzFke0WxlIjAUXev+ucZmCSvtxlJhitqGVijgYCk/EXovr+zsDXAKjXtIwfUBlllKHhABA8Fqw4aO+pV77uB9iCoZkAwQMQ4juNXIOI0AOyV8VPt+lAZJGvtAmil/GOPNFsHl1slW84WkYp8XavMrCo0PRtAetbLVIWqnLKxhCQhRKiU+gUR/UkQBN+yGmdEVEsFPzywQn6h6vDDX9646Rvv/N06V1sZY3s1I6UQUaSZorH6K+XhbCsodmpbE5Bs15WmRAERIiSzsFw3qQRcgRVNWS0rcnUHE5ShYCEB7BCjB4wddcpHfjwzcfyeBlUwmYcF1ZMYY1eY5X8EnX6qhe2QVbKtou+uS7aE/Q66q+iq31OL5wDgh2XmMBmpGNvDfDTmuJBJABCMMSal/EchxEcQ8V4j/JeLyad6YK1ywW/eHOCGC+Kb/vHc42pcX4XI9m1GsURkojXoz8lUu7n+o1N4Mt6r7kXgZqBJgpoMBiRIp7cqy4maoYNdu7S6/S7HhEVyxkKl6f7amoPPWHfyh29ZxN5/C6onGkOVvZRSChHDTLZIC5gxFfkJ5Ar+BwATzKnOD6NTqwrYl1ENWGByPTTw7NYh5hxjDAAohAi11v9NRB8OgmALEXFDFcVLEUc8sEL7OBW84IL4xsvOP7ZWE1czhIPiWEpAxrtlgNlOKlu8MmDZ6npKFPpOAYlS0xXj0s9aU1OTeVgLWpkm0JxjQACPhqMHblp38odvMeNUFstQJSaiE5RSVzDG9lJKpW3CeZlV1XlKA1TpO8ayuBX8KrxtFypGd5s+0EsFvofCE+a9vku23pORS78PNbNPEgBiIcQKpVSstf4CY+wvEfEeZ+KtXKpY4oHVfpnbp0Jc99ropq+de1wo+DZEfHoUq2ZSfbZPz7yLgajDXSqTMdpx1pZG6PA6xVZrqmP/hws/5A1UGDCuCB4JRw44+6hXT/x4EWZUtfmpRlF0vFJqGyLurZSSjDGRpQTLBOzDtJ1zlqTuFFQc1DwkM56lFylUqdC+qkQqW6SqSjn02tTQazbtSKg05zxExEBrfSMRfVQI8U/uimap44nXsQIA3TVTx8Nf0bh56u2/V0O4EhEPiqRMCyXtOtSWGYpNWtzfd2sVdbPR9uy2et//MJZgmkiHAWdA8AiNHHz2Mad9aGYRQVUYFcCLlVJXI+J+SinNGGNVbPWGtUwtawsdpjlz1flSFfr/qUj0XxHIFswPtdtEjJx915ZHFUIwrfXPiWgz5/yriLjLaFMj62y21OMpn7HefeONI/hbL5u/acv5L60jTTPGDmxEMkJAYfWn6ZwnU5AyHCggoXKLUtYeEAuGz7VZuAFkMt2BS+lUhWNFBCQiWQu50AoeYKsOOPvoUz70w5k9X/1vA9Uoil6ktd5mQDUy7YmVkoJBHeyLtJZFs6SGyS32IWka2JawCLj3RCNEjlIjBgDJGBthjIVa61/GcfwPjUbjf69evfohIsKlJKPywFoh7rzzs7XD1r5k/papPzo+RHUlMr5PI4qVEZ8TOnJ+TQTMrdQnItAUUFtOVpYacDWnbe7+dhYVtRXBKoJnof411XABlU9kBRkIJqSmB8MVTzvzqFM+cuPMxITYsDigapf/LzGGKgdqrRuIGHTryCnL3IaZKQ4jU80Wf4a1vUH4TJcGyLa0DuM8ZXjobEeYTm4pEkEQBAAQSCnvJKJLm83m/x4dHb3XAKrtoFLLDVvEU1lStXbtHzd/+rXzXsBJbmOc79NsSoUs7T3v7I92JVZGcuU6WaUgC+0FKCupIlenCR3yK6xkUJVP87abYZdxqoILDfRQfeWBm4485SM3zm4+P1h/wWS8iJnqixHxSsbY/kopCQA1a/02bEprIUGz317/PqVZlSVZJaNasiOye+FcqcpUAvMSa0quXJ7aVPmV1vomIrpMCDGFiA8RESOimln2N5YrvuBTs1C1PcR166IfXX7u0SvC8DrO2NOiqA1Uu/uaZgC1bXqpHa1C7XIsbYexYyptbXtfC4p79K00HVstcDUYTohgRrYCkQxCLrSGB4LRgzatO/UjP1rkQpWKouhFnPOrEPEAY/3HrWF0VdBbiCXssOVFw9jHrCxrkKmqvXKxVRsMCnhhaYynmRAiBABQSj2KiN/TWm955JFHvnvggQfuMrcGN4P/aLljjHjqSao2B7huXXTb1Luei6C+CYhPa0YyYgxDqDqqJK055QkTkw6pVvbasmZEs0xnlOn/h9RoVBMQlhu7JLjcQQug4yIEaBRdyXhtIqAwEEJr+o1YddCmdSd/5EZaPE6VmyaAF5se7wPiOFbuiOqMe5I9LtxD+0cLyCsOZRv9mmVDgYVhL05ZBcUocszClSlCIWOszhizS/3HlFI/4Jx/Uyl1Q61W255pY9ZLWT7lgbXL8n/9hrfHP9ny9iMA1VUM2WFRLJsMURi3J5NQVuDrCgytsz8jIG2nqWa9U/OX//kjkq0bVVJMM8urJDHGlul1st4nNL9I8mMZBrymlN6h63uddczJH7lpEUE1RMQoiqIXKaWuZIwdIKWMzc1XNmWTiirYw3Dkz2Zqvbo77cHzR4OaZdtjzxufkuNzSgWdWdap3zWw5gDAOecBIgYAAFrrHUqpf+ecX0tEPxRC/MyCp+mYYmbJL59sWCOeOoWq62pr1766Ofu1857DGFwrOHtWoykjRAgcwX460a8C14k2M80CLWYzUjTdq6WAanlX7GiLdVtfEcFZJ7WTrg6vi2ZCqww4q2kNO8IV+5+xbuPkLROL0KbqZKpRFEXrGWNbAWB/pdS8MVSRZhlY1CFkD5lZcfgQMMrN4LR9hrnOYm4DwBIJyyZVAVftZPraOW+UWQ1At/PunJuUMzXniQdBwMzyHgDgca313Yj4IyL6Gef8nwHgV1Z3SkShAVS1HLSonmPtdhfNzga4/nfi2a/90XOAq2sCwZ/diGTEWObBkmaWBIX6O4czzfKteVltmcN/Z8brKAmc4lfu/phlfqFXgAYlBOMIsANX7nfW80+dvGkROVVERIqi6AWMsas45wcbl6rAPs445zZDdbuZQGvd4eLkPvuKOFmn3TTdRk5l3tDPbe2pYLKtotHY6Mpr3c0RETHGMHsMZntt27Gvc7dj9gWICPIkvNnDzLWncLZRYGidHmNRaywiQomEGIyrVAQAv2KM/VJr/V+IeAvn/DYA+DUiPuqOM0pXgstEg+oz1qqc6voXxD/8+h8eyQN1NWP8t6OEUw3anPotqDpm0oRASIYjxbRllWWBz1UEZIcIlo1NKZ2J5d41zs3f5suKgLnG1UQyCLhQRA+KlQef9fxTP3zT1CKDaqPReC5j7MuIKKSU95jlqLJLSpPx2JuwQ1Lqjge3OGgxwwGKDsCxgOXuS061nhzQQHcbRVp9932uuVRGB+uCYXa7kOnqSvfVBUfzGW1fv/k9OsdDme4wcHlpm+W6n505D+hkpUREkojmiKiJiHNa68cA4CFEvN8YSe8QQtwPAL8GgPs553HmBNllvlyOUimfsVbgVDdsuET+4NK3rl05ElwbCLG20YwjRBDaJAgtkDI8pgFYtDeJ85qs4UqrkES6pJCVDv0rdezPmdrao2uQIgIGQCoMuFCK7sf6gZuOOd0M/luE5b8bTzzxxP6rVq06qNlsNs0DXddqtdi2MM7Pz+PIyAhzwBUajQbU63Vyl5+NRgPr9boLHNlxKIXXdbPZxFqtRs6/yfybsvdEs9lEAIBarda2vWazSebnbe9rNpusVqtBcnhJuJ/lbANzltzp8dnPzXxG3j6i42NAzjK9A1jN/91WWHLObdsxm8+MAeAJAIh+8YtfyLVr1zZLxpGHZtux/fwnQ1XfA2tRpjQ1xXF8XP3kaxc8OxT822HAnt1oygihJalKNaeOwXS69s6OQskB1iJgdCmCFh3QxQVr4K4rIiCQYcBDTXQv1PffdMzGyVuWAqj6WJYTidHhvfMGI5IH0acYFUATEwzHx9UtW9/+W1zCNWHAn91oxtJwetoZsEcdcqVkmcTMjGini4kKFfodPBYmnVftjMDCPcQQALXxU9VE94ravmcdtXHypzQ1xnGJgGoPRRcfSyeUWS158HyqZ6y2QHPT1LmHCxVcE4Z8XSOSMUvaJKnrqGiXFuhxYF+6fRpcppNmvYY6yCtWOVrWOBAskJruE/X9X/P810zetliFKh8+fDzJMtbZ2dkA16+PZy89/zAO4luixp/baMaSIwaUZqWZUrtTtU9oAaJuoFpWkUdARonYSVdxuyqb0GqoBO2YDBj9qm06INCIcU3wQGq6L1ix7+nPO23yNkuD+Mvbh4/FCfZkOZCpqSm+fv36+KbLzn06q4ttQvDnJoUqFOSAHhABEqWC+o65U7a/PzGqooyhMhQVqtq3VT7PPvfv3RzxHV4BATQCaURs1gQLNNHdor7mNc877ZJbN28+P/Cg6sOHpwKGVqi66bJ3PT0I5NW1UBw334wjQBBd/VHd3vrcin62I4qotLKfemIDtQ1ncYthmcKYyZR1FkDzOrocRWPMGBtBhPtYuM/Go8/46O1++e/Dh89Yh5SpjnF87evUjVMXHCJE/M0g4MfNNePCufNVMkLjwcqS/NU4vVd6CBElE0/B3VYmo8VWADILskTQpoV1mwaAbPO/sQsi0IKzGgDtGFlz0OlHn/HR26c8qPrw4YEVhqRTHR+fVrdc/ubfqoP4Vq0WHBtFKmYI3DrMly2xjdIbTAXfgGhLc2VcU6gtGyVA92c2sh4Ced1YrW10THKx7im8rWPL8riYNP8TIicilUiq4CEWHHDGEa/6n7dOTY3xcQ+qPnyAL14NLt9hiCh/dtm7nq6EuqoW8OfNNyJJCMIYqRgj6QT2CsdTO+L9FIQRczoZKYG6tip9q5WmjXvFlt9qmr1iqyXTtfkzPf2UVXG5kwZMPsuASIUhD4loB47uffYxp03eMrv5/GD9+Bdjfyn78OEz1sGW/2NjHBH1jl/++AAV0lVhyJ8314wlIIrUT8U1RcFCN33sdFehFk+aSS07uFVjd51grs12Ec3oatZ6D7ayT0MruFMxzT/QVRFQq8fQGmfHQnBBBPdBsO+Zx572FzfS1Bhff4EHVR8+PLAOY/k/Pa3uvffmfe+7bcvVYcjWz8/HCk32XTL9EfIz1pwxJm6bvmvJl/eiZAaW7hh/nSjiW0DahaNtoxyStT85g4FkwFlIpH9DfL+zjj7jkptnJo4XnlP14QO8KmDw5f8EQ5zUs5ed/zRWH5niqF7SjFXMEIIOM2ir+TR8pV2Ct82hynO0AseMpUsff76qoLsvQJmGtUU1mO1q0EHIhVa0g9X2PfPoMy652XOqPnyA51iHCao/2zbxdCUfuEqgXB9J3WAI9VyX/4wfql3ft/hWuxS3xtHJD1sFrfbM1gXJdi0rZkxWzISBZLBfZ8urNW7J/Cx11Go1FiAAKhGwgDT9GlfsdebRGy+5ZWLieDE+Pu17/3348FTAEHr/cVLfd99/7KfgiS2B4OubsWoa49x8L05AlkqlbIXe4VTd5TkSsFYRKeePowBw5Vm2icAqC9q27bbFGts/C9pO66sCAoUEumWSDRqTl8RCsIAI7tXhXqcfs/Evb6GpMT45+X0Pqj58+Ix1OJnq4/feu+9/3/SZKwOIXjIf65gBCjJpXaHlXrZLyhXn540CMWNZckeigGPsmc/VMjNQQKfZsEsFdPMoSMBam/HYMWdY01rfT+EBZx53xuSs16n68OEz1qGCKhGtuevmz2wLsPHSZqQlAwiSpX7S119WHEqH+hESpnMAW8DbnvG2fALSqr3JfG07LAHp7DgWk7lqQqTktUYtkLMv7n8daoQEVBVjWCOAR4LafpssqHpO1YcP8MWrYYHqY489tvf/+5c/n0LdeGUsKQZoFaq6GZ24baIO5+qIVFsD+HIE+9jNJCU374WMq3/JaJb06UaoCQgIQCUdVfgQG9nnrOdvvOSHvk3Vhw9PBQyVU6UHH1x1x79ccgVTjVdGkpqIUMvIp7Ab0CVOoJRmnwYcM4Uu6NEiELHd1Nq2s+a6XWkgAA3E2jxaTL0LIVn+A6IWDGuI+BCv7zd21MbJH87Obg5w/QVep+rDhwfWIYDq5KR+8MF/X3XHD/7ya0w3T4wlNQAoTCY/d88A28emILQ6q0ibfBXtUCWyM9Gh+zYzngCsHVzz+dcWqIOtcKVyLjtmQBPIgLMQAB7E+gGbjto48UOamRAeVH34AM+xDgtUd+yg0bu/v/nrHKKNkaRkmie2luemm4mlXKchKTskV9RqzM/lNpPBbZVE/NmZ7gSkk6U+pd2uWYVCW/cVQSrnSt+bDCaIBWehUvAI1vY/6/kbJ344tYSc/3348LGMgdWCKhGN/ubHf/K1AOLTGpGOESE0Bilt4EnkLvEBXe/UNv1px4hpo2utMDCenGhNSkVsH12N5Lan5mzEMakiDQxTZQIByEDwGiL+Jhjd94yjXzP5I1+o8uHDUwFDiYkUVB9Zc8dV7/k6h+apzZgihiTsWD9japICG0uW8tn5l9mBZ22A6voHJKL/1oOlMyN1zVNSQjQdb99KfDvnYLlNAG0ZtDu0UIMMBQuBYAeINWc8f+Mlt/hClQ8f4FUBw13+3zG648ZLt9Qw3jjXVBEACdtClYBiOo6kw2jaZpR2uqoLkJqI7JjrrIl0R/uoU7yyQJv+39HEdjXPRtC5citjq6oRdE2wQCnaIcLVG5935l/f6kHVhw+fsQ5tciciarqL6nf86I8vFRhvnI+1BCSR8qJpc6hN9fKLRGlGiBZn0+W51QYkWa8L1q7jvzX7sxZ+mPaomhQVGKEZ15KZedXR4kotSVcbFZF8VBxwrCtF94NYffrzzvzrW73434cP8Bzr8CRVSEQU3HHrRV9FiDZFUsUJ2KfgBNSWVbdLmlz+s8gtCoCItJlx5YBq2o5qC1htLazUalc1eXAi/nedroo4WnLe3740ICCFDOtE8BAb2fvsYzf99U9nkt5/D6o+fHgqYGiFqpHbt130JdDRG5SieQQMLQ9KQMwtQLlL96JGgNb8qFYmauVN2fbWzplW+T9rzadqbxwoGiqYVyzDJP2VIuFUH9LhXpuOO+MvfuCX/z58eCpgqKB6//3bV96x7U8uRR2fpRTMI2DYPuoJqEyfWtS6avnSYm2q4xHYMaQv97Wtt7jjs01HVaHrVVpGS9JywVkIRA+T2Pfs48645AfGT9VLqnz48MA6tN7/0Tu2/cnlAqPTm0rPJ87/RITAUsDqmFaK7VX1kk9pG1eNjrNVmnUi5YGqQXWD245AFYBZa8HM6BQsbApoCRakEDxQmh7FYM2mY8+65PtTU2N8gwdVHz48sA6tTZVoxR1X/smWAOONjVjHABiaNNS47QEmmAcAjhk1JiV1jVhAB9gBfNbBClNwBFcpYHz+MA8STdYLLaVVQklk22CrTnzVREpwDAnoYRGuOfP5Z/7VD2cmjhceVH348MAKw9OpUu32rRd+haPc2DCGKonNHnT06WNq1JdArQW3rN60Tf6EdkpfZjirqfC7tX4rpUoph8Tyr40jTbWz6LpfQafcq41vTQcTgmAsBIQH2cj+Zz//tMkfzm4+P/Azqnz48MA6FFCdnJzURHfVb9t64ZeZjl8ba5gnpBqQbeUHm6kWjqtGR/5EOT37RQUk5+8t8xRs/T9FXCMydcE1kSR0FrTaR7wAZTJeZtpUawDwEI3sf8bzT5u8MSlUeVD14cMD67B0qkTi9q0XfZGDfIPSNA+AofUwBUqV/W1SJgRkrTbStLNfpyCZZLMsL4MlIJblaYEAKUcihehmyQkh2waueWANoAkSlUKro8oquJI2VaXpIVZfccaxp03e6HWqPnyA17EOJ1OFVKd66/SFX+Eg3yQVNSgpVOW2gtoxJ24WaqdDU06/f35/Prb41OzrEahwFHYOZ2v/c2VYCUPQ6Qdrsl8pOAuJ6H4MV55+zOmf/PGE16n68OGBdXjLf0g41W0XfaUu9JtipSUQhQlFiemy3AUs6/Bv3Z/ytKeQ2wSQweYcjWmr2yo7NaCzg6vNkSpfOZC6ZdnPIg3KWP89jPW9zz72zI/fODMzIfyMKh8+PBUwRE6Vwtu2XbQ5RPnGZmyc/1Nv53YrvzbtZ1vbQvvI6lyyATIjo925VhktrJt55tkMQtZy0J010KF3Nd4CyfpfBgEXBPQI1Pc/++iNkz+imQnhrf98+PDACkPiVImIxO3bLvoCp/jNjZgkIgRku1PRRdD8wXzZDig714qAGAJqd45V+roOp6sWKnZkmY6kqmMmS7tOte29rWIYkaVjSRMxzgKt6QktVo2t3zh5w4wHVR8+ntLBhwyqgMjpNc996PNI8jypaB6BOBnis9W95PR6mv/QCKzSWhKCO8zPyK5MqQjBtf+zkigj5k/4ztQXG53+fvtZCe1gml2T7beDOKIz48qpbLX8A8zWFGNYY4iPYG1003FnfXyGZibE4R5UffjwGevg4n9gpnMTbtv67s8jqbcpTXPp9tFWpWy3ElFmdpR2sJRaxiuIqQVfm/gfcltSO3r/wR3sZ4Dbeb3JQqltuCBBpnkADZx38LYxAI4g4gOE9TOPPeMTN85M+EzVhw8fQyheJeJ/0ECEt2+98LMc9DuUpgYQhdjR30SU928jxAdK1vmsnRdN2lyTjBe6zrsq1MEWGGAzQtUCW9cKAAgYtvjdlhkLA0BinNUB4AHOV55+7Ninb5yZOF5smPSg6sOHjwGBlYjYCSecwIgovH3bhX/PUb1LKj0PRMKBTmyfN5UBV2rxoC2AzThM2ZU8YhvfmRainL/njmhxANd8DivB5WTqi/FgbeNcETgRaRGwgDQ9JPiK1zx/08dvoqkxvsFX/3348DEoFTDR8lOl27b+8ZdqXP9+I9KSgGpGNqWBwIx8bi3985buaVXftpjaKapt2SdpynOzcsetWAE/do5KaZsuYFtfU7/X9uYqa9ma8yDRYSiEVvQA8pEzjx771M3epcqHDx9DyVgnJibYxZOTRETstq0XbQ65/P1GpCQRcbC1IQLWyiQRW1MAqD1rtWMArXN/UsdqGxxoSlYZyVOxFjVXp+q4W5k5hGSMszsaFaw+tQ3YCVQYckakH1Ri5aZjxz5948zMhPCZqg8fPgbOWIkIL078SfHWre/+fI3THzYjJc22KG3xhA6Ok3JF+0lhK20Nbb0/yTAJwGi4ElfUbPEJnWJXmna6piuujMs+SJKsGAzg5wI1EqYeWESkA8E5aHiM6nuPr9/4F16n6sOHDxjKBAEisgOk4Lbpd38GQV2oNDUQoO7OgaJkNa3bdJ957auAeZwqZuROlF3+t8C1RTHYzLjNxLptWGCx+38u95tm3khhwLjS9ASE+2869oxLvnfnnd+qrV17atNfPj58+IBBdKwWVBnj9OrnPPg5jvpdWtE8AgSQaD9buaojWjL2qi0ATTWriFk5K9jJU1k/APPGjFuVGVQFzGpVMQVlzHZytdyqUndCO5gwIYGx9XdARILEiEVxjgEAPAF85dnHnvWX39ux4zujz3zmKfP+0vHhwwcMwrESAU5PjzPGBM1+4x2frQfwR0pTAxCEi5AGAHVHq6ozYC93rpQzJcAM99N528nRoKbtAW3LfqLWvrjbScyyyEFU27TAwLIKiKQJiAgkYxgyhIdBrDr92E0f/y7Nbg4OOugkD6o+fPgYjApwlv94+9aLPhtw9c5mpCSQO5K6AjQ7r8u2ibb0qdhqGKDybeSpCtocp3JmWdnPKlINICWNCgQYM4QaIDyCbOT0Y8c+faMf/OfDh4+hZKxEhNPT0yzhVC/8TE3od0aRUgAgCIgRAHft9Yo6oLJWfOloazN51Yr/bQZp9aydKgLqmIPVYXRNmUJWtiiVYxuIhrwgAK4BNGNQI4DHCYMzrfjfg6oPHz5gGKqARErK1OzUjz5VE/rdc03ZRABOBNpp6adU4ZRU2ykxjE77/hGSllU0ulZKlt1o2djWoGqynwnpH8oDQcvTUueDwXymdvyyLPGbSMDMfnU2ISS227WaCJVUD/Nw9RlHn/WxHyUdVV5S5cOHjwGpALKlpzuvC+/413/69Mo6f8fu+RgQW3YlmOMPRWRUTJS/dUQs5R4wncHS7vVvZanolqYwv1tWp56srRHUpK1NAbRtp22+FgAIziCS8hEJo2evP/sTMzMzE2KDl1T58OFjWBkrIqd/+88fv1Wr+NQndsmfExAHQm0yPnKU9KmJCllutAW+LLe1FFuglzr7JdmuBkQNYIxXkoQWrROK4wxIjlmLoQQ0A2TGZcsZXG3nv5Jj7AKUjNlmaS6tAUhBEEio7/+h9adNzsxuPj9Yv2HSz6jy4cPHcIAVMcHIYOVh0zvn565YvWY1MF5DrWqkZUSrRuu0c3cjzflGa8ksqmgEU33o40/M4T7m7zwYSV+r4pHcjim1ukEqniMZrSTZXJ285mAA/PWv4WkHHwwPPvwEAgAcaF6v911NDz78BB4IAA+HI7g/ADzy+O7kc/ZrbffxJ+ZwTbSCeDiHTwQjuDcA7G4+xtbAGtgpQlwlI9KjdXrsscfgCTxUveS083bSxATDCzyo+vDhY+FUAbyHRgLaE40KGSYiy0pQl9eXbVMDXAyIk9pfGj58+FhI4M3+Kfo5UsEfGPAPle8DdNuXmZkZQRMTrMI++fDhw4cPHz58+PDhw4cPHz58+PDhw4cPHz58+FjE+P/8W2SRej/UewAAAABJRU5ErkJggg==" alt="PROVANTRA Logo" class="h-8 w-auto flex-shrink-0 object-contain">
+
+                        <span class="font-extrabold text-xl tracking-widest text-white">PROVANTRA</span>
+                    </a>
+                    <p class="text-xs text-zinc-400 leading-relaxed">
+                        Прямой оператор B2B поставок оборудования, комплектующих и товаров из Китая с доставкой по Алматы и всему Казахстану.
+                    </p>
+                    <div class="text-xs text-zinc-500 font-mono">
+                        &copy; 2026 PROVANTRA B2B. Алматы қаласы.
+                    </div>
+                </div>
+
+                <!-- Col 2: Navigation -->
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-white mb-4">Навигация</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li><a href="#route" class="hover:text-gold-500 transition-colors">Маршрут Китай-Алматы</a></li>
+                        <li><a href="#services-tabs" class="hover:text-gold-500 transition-colors">Услуги сорсинга</a></li>
+                        <li><a href="#advantages" class="hover:text-gold-500 transition-colors">Преимущества</a></li>
+                        <li><a href="#contacts" class="hover:text-gold-500 transition-colors">Контакты</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Contacts in Almaty -->
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-white mb-4">Офис в Алматы</h4>
+                    <ul class="space-y-3 text-xs">
+                        <li class="flex items-center gap-2.5">
+                            <i data-lucide="mail" class="w-4 h-4 text-gold-500 flex-shrink-0"></i>
+                            <a href="mailto:info@provantrab2b.kz" class="font-mono text-white hover:text-gold-500 transition-colors break-all">info@provantrab2b.kz</a>
+                        </li>
+                        <li class="flex items-center gap-2.5">
+                            <i data-lucide="phone" class="w-4 h-4 text-gold-500 flex-shrink-0"></i>
+                            <a href="tel:+77074256100" class="font-mono text-white hover:text-gold-500 transition-colors">+7 (707) 425-61-00</a>
+                        </li>
+                        <li class="flex items-center gap-2.5">
+                            <svg viewBox="0 0 24 24" class="w-4 h-4 text-[#25D366] flex-shrink-0" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                            <a href="https://wa.me/77074256100?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5!%20%D0%AF%20%D1%85%D0%BE%D1%87%D1%83%20%D0%BF%D1%80%D0%BE%D0%BA%D0%BE%D0%BD%D1%81%D1%83%D0%BB%D1%8C%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BF%D0%BE%20%D0%BF%D0%BE%D0%B2%D0%BE%D0%B4%D1%83%20B2B%20%D0%BF%D0%BE%D1%81%D1%82%D0%B0%D0%B2%D0%BE%D0%BA%20%D0%B8%D0%B7%20%D0%9A%D0%B8%D1%82%D0%B0%D1%8F%20%D0%B2%20%D0%90%D0%BB%D0%BC%D0%B0%D1%82%D1%8B." target="_blank" class="font-mono text-emerald-400 hover:underline">+7 (707) 425-61-00 (WhatsApp)</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Action & Working Hours -->
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-white mb-4">Режим работы</h4>
+                    <p class="text-xs text-zinc-400 mb-4">Пн - Пт: 09:00 – 18:00 (Время Алматы)<br>Суббота / Воскресенье: Дежурный менеджер</p>
+                    <button onclick="openRfqModal()" class="w-full py-3 text-xs font-extrabold tracking-wider uppercase text-black gold-gradient-bg rounded-lg">
+                        Запросить расчет
+                    </button>
+                </div>
+
+            </div>
+            <!-- Юридическая строка футера -->
+            <div class="pt-6 border-t border-white/5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 text-xs">
+                <a href="#privacy" onclick="openPrivacyModal(event)" class="inline-flex items-center gap-2 py-2 text-zinc-400 hover:text-gold-500 transition-colors">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-gold-500 flex-shrink-0"></i>
+                    <span>Политика конфиденциальности</span>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- STICKY FLOATING WHATSAPP BUTTON -->
+    <a href="https://wa.me/77074256100?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5!%20%D0%AF%20%D1%85%D0%BE%D1%87%D1%83%20%D0%BF%D1%80%D0%BE%D0%BA%D0%BE%D0%BD%D1%81%D1%83%D0%BB%D1%8C%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BF%D0%BE%20%D0%BF%D0%BE%D0%B2%D0%BE%D0%B4%D1%83%20B2B%20%D0%BF%D0%BE%D1%81%D1%82%D0%B0%D0%B2%D0%BE%D0%BA%20%D0%B8%D0%B7%20%D0%9A%D0%B8%D1%82%D0%B0%D1%8F%20%D0%B2%20%D0%90%D0%BB%D0%BC%D0%B0%D1%82%D1%8B." target="_blank" rel="noopener noreferrer" aria-label="Написать в WhatsApp" title="WhatsApp" class="wa-float">
+        <svg viewBox="0 0 24 24" class="w-8 h-8 sm:w-9 sm:h-9" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    </a>
+
+    <!-- REQUEST FOR QUOTATION (RFQ) MODAL -->
+    <div id="rfq-modal" class="fixed inset-0 z-50 flex opacity-0 invisible items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div id="rfq-modal-card" class="glass-card rounded-2xl max-w-lg w-full p-5 sm:p-8 relative border border-gold-500/40 gold-glow">
+            <button onclick="closeRfqModal()" aria-label="Закрыть" class="absolute top-3 right-3 sm:top-4 sm:right-4 text-zinc-400 hover:text-white p-2">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="mb-5 sm:mb-6 pr-8">
+                <span class="text-[10px] font-bold tracking-widest text-gold-500 uppercase">PROVANTRA ALMATY</span>
+                <h3 class="text-xl sm:text-2xl font-black text-white mt-1">Запрос расчета поставки</h3>
+                <p class="text-xs text-zinc-400 mt-1">Заполните детали товара и наш специалист в Алматы рассчитает смету под ключ.</p>
+            </div>
+
+            <form id="rfq-form" onsubmit="handleRfqSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-[11px] font-bold uppercase text-zinc-400 mb-1">Компания / Ваше имя *</label>
+                    <input type="text" autocomplete="organization" required placeholder="ТОО 'Алматы Трейд' / Арман" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-base sm:text-sm text-white focus:outline-none focus:border-gold-500">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[11px] font-bold uppercase text-zinc-400 mb-1">Телефон в РК *</label>
+                        <input type="tel" inputmode="tel" autocomplete="tel" required placeholder="+7 (707) 000-00-00" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-base sm:text-sm text-white focus:outline-none focus:border-gold-500">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold uppercase text-zinc-400 mb-1">Email *</label>
+                        <input type="email" inputmode="email" autocomplete="email" required placeholder="info@company.kz" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-base sm:text-sm text-white focus:outline-none focus:border-gold-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-bold uppercase text-zinc-400 mb-1">Что требуется привезти из Китая?</label>
+                    <input type="text" id="rfq-service-field" placeholder="Например: ЧПУ Станок / Текстиль 2000 м / Светодиоды" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-base sm:text-sm text-white focus:outline-none focus:border-gold-500">
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-bold uppercase text-zinc-400 mb-1">Комментарий / Объём партии</label>
+                    <textarea rows="3" placeholder="Укажите объём, размеры или вес партии..." class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-base sm:text-sm text-white focus:outline-none focus:border-gold-500"></textarea>
+                </div>
+
+                <label class="flex items-start gap-3 text-xs leading-relaxed text-zinc-400 cursor-pointer select-none">
+                    <input type="checkbox" id="rfq-consent" required class="mt-0.5 w-5 h-5 flex-shrink-0 rounded accent-gold-500 cursor-pointer">
+                    <span>Я даю согласие на сбор и обработку моих персональных данных и ознакомлен(а) с <a href="#privacy" onclick="openPrivacyModal(event)" class="text-gold-400 underline underline-offset-2 hover:text-gold-300">Политикой обработки персональных данных</a> *</span>
+                </label>
+
+                <button type="submit" class="w-full py-3.5 text-xs font-extrabold tracking-wider uppercase text-black gold-gradient-bg rounded-xl hover:shadow-[0_0_20px_rgba(207,167,110,0.4)] transition-all mt-2">
+                    Получить коммерческое предложение
+                </button>
+            </form>
+
+            <div id="rfq-success" class="hidden text-center py-8 space-y-3">
+                <div class="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
+                    <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+                </div>
+                <h4 class="text-xl font-bold text-white">Заявка принята!</h4>
+                <p class="text-xs text-zinc-400">Менеджер офиса PROVANTRA в Алматы свяжется с вами в ближайшее время.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRIVACY POLICY MODAL (Политика обработки персональных данных) -->
+    <div id="privacy-modal" role="dialog" aria-modal="true" aria-labelledby="privacy-title" aria-hidden="true" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div id="privacy-modal-card" class="glass-card rounded-2xl max-w-3xl w-full relative border border-gold-500/40 flex flex-col overflow-hidden">
+
+            <div class="flex items-start justify-between gap-4 px-5 sm:px-8 pt-5 sm:pt-7 pb-4 border-b border-white/10">
+                <div class="min-w-0">
+                    <span class="text-[10px] font-bold tracking-widest text-gold-500 uppercase">PROVANTRA B2B.kz</span>
+                    <h3 id="privacy-title" class="text-xl sm:text-2xl font-black text-white mt-1 leading-tight">Политика обработки персональных данных</h3>
+                    <p class="text-xs text-zinc-400 mt-1.5">Сайт: PROVANTRA B2B.kz<br>Редакция от 05.10.2026</p>
+                </div>
+                <button type="button" onclick="closePrivacyModal()" aria-label="Закрыть" class="flex-shrink-0 -mr-2 -mt-1 p-2 text-zinc-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div id="privacy-body" tabindex="-1" class="flex-1 min-h-0 overflow-y-auto px-5 sm:px-8 py-5 sm:py-6 text-[13px] sm:text-sm text-zinc-300 leading-relaxed space-y-3 focus:outline-none">
+
+                <h4 class="pt-1 text-sm sm:text-base font-extrabold text-white">1. Общие положения</h4>
+                <p><span class="text-gold-500 font-semibold">1.1.</span> Настоящая Политика определяет порядок сбора, обработки и защиты персональных данных пользователей сайта PROVANTRA B2B.kz (далее — Сайт) в соответствии с Законом Республики Казахстан от 21 мая 2013 года № 94-V «О персональных данных и их защите» (далее — Закон).</p>
+                <p><span class="text-gold-500 font-semibold">1.2.</span> Собственником и оператором базы, содержащей персональные данные, является PROVANTRA B2B Sourcing &amp; Supply, БИН 080423554254, адрес: Рауан38 (далее — Оператор).</p>
+                <p><span class="text-gold-500 font-semibold">1.3.</span> Сбор и обработка персональных данных осуществляются с согласия пользователя, за исключением случаев, предусмотренных статьёй 9 Закона. Согласие даётся путём проставления отметки в форме на Сайте перед отправкой данных. Отправляя данные, пользователь подтверждает, что ознакомлен с настоящей Политикой.</p>
+                <p><span class="text-gold-500 font-semibold">1.4.</span> Оператор обрабатывает только те персональные данные, которые необходимы и достаточны для целей, указанных в Политике.</p>
+
+                <h4 class="pt-3 text-sm sm:text-base font-extrabold text-white">2. Какие персональные данные обрабатываются</h4>
+                <p>Оператор обрабатывает следующие персональные данные пользователей:</p>
+                <ul class="list-disc pl-5 space-y-1 marker:text-gold-500">
+                    <li>фамилия, имя, отчество (при наличии)</li>
+                    <li>номер телефона</li>
+                </ul>
+                <p>Оператор не обрабатывает специальные категории персональных данных и биометрические данные.</p>
+
+                <h4 class="pt-3 text-sm sm:text-base font-extrabold text-white">3. Цели обработки</h4>
+                <p>Персональные данные обрабатываются в следующих целях:</p>
+                <ul class="list-disc pl-5 space-y-1 marker:text-gold-500">
+                    <li>обработка заявок и обращений пользователей, обратная связь</li>
+                </ul>
+
+                <h4 class="pt-3 text-sm sm:text-base font-extrabold text-white">4. Сбор и хранение</h4>
+                <p><span class="text-gold-500 font-semibold">4.1.</span> Персональные данные собираются при заполнении пользователем форм на Сайте.</p>
+                <p><span class="text-gold-500 font-semibold">4.2.</span> База, содержащая персональные данные, находится на территории Республики Казахстан в соответствии с пунктом 2 статьи 12 Закона.</p>
+                <p><span class="text-gold-500 font-semibold">4.3.</span> Персональные данные хранятся до достижения целей обработки или до отзыва согласия пользователем, если иной срок не установлен законодательством Республики Казахстан. По истечении срока хранения, при достижении целей обработки или отзыве согласия персональные данные уничтожаются.</p>
+
+                <h4 class="pt-3 text-sm sm:text-base font-extrabold text-white">5. Передача третьим лицам</h4>
+                <p><span class="text-gold-500 font-semibold">5.1.</span> Оператор не передаёт персональные данные третьим лицам, за исключением случаев, предусмотренных законодательством Республики Казахстан.</p>
+                <p><span class="text-gold-500 font-semibold">5.2.</span> Трансграничная передача персональных данных не осуществляется.</p>
+                <p><span class="text-gold-500 font-semibold">5.3.</span> Персональные данные не распространяются в общедоступных источниках без отдельного согласия пользователя. Оператор вправе передавать персональные данные государственным органам в случаях, установленных законодательством Республики Казахстан.</p>
+
+                <h4 class="pt-3 text-sm sm:text-base font-extrabold text-white">6. Права пользователя</h4>
+                <p>Пользователь вправе:</p>
+                <ul class="list-disc pl-5 space-y-1 marker:text-gold-500">
+                    <li>знать о наличии у Оператора своих персональных данных и получать информацию об их обработке;</li>
+                    <li>требовать изменения и дополнения своих персональных данных при наличии оснований;</li>
+                    <li>требовать блокирования и уничтожения своих персональных данных, если они обрабатываются с нарушением законодательства;</li>
+                    <li>отозвать согласие на сбор и обработку персональных данных, кроме случаев, предусмотренных Законом;</li>
+                    <li>обжаловать действия Оператора в уполномоченный орган по защите персональных данных или в суд.</li>
+                </ul>
+
+                <h4 class="pt-3 text-sm sm:text-base font-extrabold text-white">7. Отзыв согласия и обращения</h4>
+                <p><span class="text-gold-500 font-semibold">7.1.</span> Для реализации своих прав и отзыва согласия пользователь направляет обращение по электронной почте <a href="mailto:provantra.b2b@gmail.com" class="text-gold-400 underline underline-offset-2 hover:text-gold-300">provantra.b2b@gmail.com</a>, по телефону <a href="tel:+77072304008" class="text-gold-400 underline underline-offset-2 hover:text-gold-300 whitespace-nowrap">+77072304008</a> или письмом по адресу: Рауан38.</p>
+                <p><span class="text-gold-500 font-semibold">7.2.</span> При отзыве согласия Оператор прекращает сбор и обработку персональных данных в течение 15 рабочих дней либо направляет мотивированный отказ, если отзыв противоречит законам Республики Казахстан или существует неисполненное обязательство.</p>
+
+                <h4 class="pt-3 text-sm sm:text-base font-extrabold text-white">8. Защита персональных данных</h4>
+                <p><span class="text-gold-500 font-semibold">8.1.</span> Оператор принимает правовые, организационные и технические меры для защиты персональных данных от неправомерного доступа, изменения, распространения и уничтожения: передача данных по защищённому протоколу HTTPS, разграничение доступа сотрудников, учёт передачи данных третьим лицам.</p>
+                <p><span class="text-gold-500 font-semibold">8.2.</span> При обнаружении нарушения безопасности персональных данных Оператор в течение одного рабочего дня уведомляет уполномоченный орган в сфере защиты персональных данных.</p>
+                <p><span class="text-gold-500 font-semibold">8.3.</span> Лицо, ответственное за организацию обработки персональных данных: Администратор Кан Даниилтемин Игоревич, контакт: <a href="mailto:provantra.b2b@gmail.com" class="text-gold-400 underline underline-offset-2 hover:text-gold-300">provantra.b2b@gmail.com</a>.</p>
+
+                <h4 class="pt-3 text-sm sm:text-base font-extrabold text-white">9. Заключительные положения</h4>
+                <p><span class="text-gold-500 font-semibold">9.1.</span> Оператор вправе вносить изменения в настоящую Политику. Новая редакция вступает в силу с момента её размещения на Сайте.</p>
+                <p><span class="text-gold-500 font-semibold">9.2.</span> Действующая редакция Политики постоянно доступна на Сайте по адресу: PROVANTRA B2B.kz/privacy.</p>
+            </div>
+
+            <div class="px-5 sm:px-8 py-4 border-t border-white/10 flex justify-end">
+                <button type="button" onclick="closePrivacyModal()" class="w-full sm:w-auto px-8 py-3 text-xs font-extrabold tracking-wider uppercase text-black gold-gradient-bg rounded-xl hover:shadow-[0_0_20px_rgba(207,167,110,0.4)] transition-all">
+                    Закрыть
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT & TRANSLATIONS -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // 1. DYNAMIC TRANSLATION DICTIONARY (RU / KK / EN)
+        const i18nData = {
+            ru: {
+                nav_route: "Маршрут Китай-Алматы",
+                nav_services: "Услуги",
+                nav_advantages: "Преимущества",
+                nav_contacts: "Контакты",
+                btn_rfq: "Запросить КП",
+                hero_badge: "B2B Поставки под ключ в Алматы",
+                hero_title_1: "Прямые поставки оборудования и товаров из Китая",
+                hero_title_2: "прямо на ваш склад в Алматы",
+                hero_desc: "PROVANTRA B2B берет на себя весь комплекс задач: инспекция заводов в Китае, контрактование, таможенное оформление (растаможка) и доставка до дверей любого бизнеса в Алматы.",
+                hero_cta: "Рассчитать стоимость доставки в Алматы",
+                hero_route_btn: "Смотреть маршрут",
+                stat_1: "Гарантия очистки",
+                stat_2: "Дней экспресс-доставка",
+                stat_3: "Локальный офис и склад",
+                stat_4: "Риск брака (QC)",
+                live_step1_title: "Гуанчжоу / Иу (Китай)",
+                live_step1_desc: "Инспекция, консолидация и погрузка на авто/ж/д",
+                live_step2_title: "КПП Хоргос (Таможня РК)",
+                live_step2_desc: "Таможенное декларирование и получение СТ-1 / ДС",
+                live_step3_title: "Склад Алматы (Доставка)",
+                live_step3_desc: "Разгрузка, финальный осмотр и передача документов",
+                route_subtitle: "Прозрачная логистическая артерия",
+                route_title: "Маршрут доставки: Китай → Хоргос → Алматы",
+                route_desc: "Прямой авто- и ж/д коридор с минимальным временем прохождения таможенных процедур на границе РК.",
+                tabs_subtitle: "B2B Услуги в Алматы",
+                tabs_title: "Управление поставками под ключ",
+                tabs_desc: "Выберите направление для подробной информации о процессе взаимодействия.",
+                tab_btn_1: "Поиск заводов & Аудит",
+                tab_btn_2: "Доставка в Алматы",
+                tab_btn_3: "Растаможка РК & ВЭД",
+                tab1_title: "Прямой поиск производителей в КНР",
+                tab1_desc: "Мы выезжаем на фабрики в Гуанчжоу, Шэньчжэне и Нинбо. Проверяем юридическую чистоту, производственные мощности, наличие сертификатов ISO и делаем закуп образцов перед партией.",
+                tab2_title: "Авто и Ж/Д Логистика Китай → Алматы",
+                tab2_desc: "Оптимизированные маршруты доставки сборных (LCL) и генеральных (FCL) контейнерных грузов. Доставка до складов в районе Северного Кольца, Первомайки и промзон Алматы.",
+                tab3_title: "Таможенная очистка (Растаможка РК)",
+                tab3_desc: "Полная легализация товара. Вы получаете товар с уплаченным НДС, декларацией на товары (ГТД / ДТ), сертификатами соответствия и всеми закрывающими документами для бухгалтерии в РК.",
+                adv_subtitle: "Почему PROVANTRA B2B",
+                adv_title: "Преимущества работы с нами в Алматы",
+                adv1_h: "Локальный офис в Алматы",
+                adv1_p: "Вам не нужно общаться с зарубежными агентами с разницей во времени. Наш менеджер в Алматы всегда на связи и готов приехать на личную встречу.",
+                adv2_h: "Финансовая ответственность",
+                adv2_p: "Зафиксированная стоимость в договоре поставки. Мы берем на себя риски изменения таможенных пошлин и форс-мажоров в пути.",
+                adv3_h: "Инспекции 100% Качества",
+                adv3_p: "Наши штатные инспекторы в Гуанчжоу и Иу лично проверяют каждую коробку до погрузки в фуру. Бракованный товар возвращается заводу."
+            },
+            kk: {
+                nav_route: "Қытай-Алматы бағыты",
+                nav_services: "Қызметтер",
+                nav_advantages: "Артықшылықтар",
+                nav_contacts: "Байланыс",
+                btn_rfq: "Ұсыныс алу",
+                hero_badge: "Алматыдағы дайын B2B жеткізілімдері",
+                hero_title_1: "Қытайдан зауыттық құрал-жабдықтар мен тауарларды",
+                hero_title_2: "Алматыдағы қоймаңызға тікелей жеткізу",
+                hero_desc: "PROVANTRA B2B барлық міндеттерді өз мойнына алады: Қытайдағы зауыттарды тексеру, шарттар жасасу, кедендік рәсімдеу және Алматыдағы кез келген бизнеске дейін жеткізу.",
+                hero_cta: "Алматыға жеткізу құнын есептеу",
+                hero_route_btn: "Бағытты қарау",
+                stat_1: "Кедендік кепілдік",
+                stat_2: "Күн экспресс-жеткізу",
+                stat_3: "Алматыдағы офис пен қойма",
+                stat_4: "Ақаулық қаупі (QC)",
+                live_step1_title: "Гуанчжоу / Иу (Қытай)",
+                live_step1_desc: "Инспекция, консолидация және жүк тиеу",
+                live_step2_title: "Қорғас өткізу пункті (ҚР Кедені)",
+                live_step2_desc: "Декларациялау және СТ-1 сертификатын алу",
+                live_step3_title: "Алматы қоймасы (Жеткізу)",
+                live_step3_desc: "Жүкт түсіру және құжаттарды тапсыру",
+                route_subtitle: "Ашық логистикалық маршурт",
+                route_title: "Жеткізу бағыты: Қытай → Қорғас → Алматы",
+                route_desc: "Қазақстан шекарасында кедендік рәсімдеуден тез өтетін тікелей авто және теміржол дәлізі.",
+                tabs_subtitle: "Алматыдағы B2B Қызметтер",
+                tabs_title: "Жеткізілімді толық басқару",
+                tabs_desc: "Өзара әрекеттесу процесі туралы толық ақпарат алу үшін бағытты таңдаңыз.",
+                tab_btn_1: "Зауыттарды іздеу & Аудит",
+                tab_btn_2: "Алматыға жеткізу",
+                tab_btn_3: "ҚР Кедені & Сыртқы сауда",
+                tab1_title: "Қытайдағы өндірушілерді тікелей іздеу",
+                tab1_desc: "Байланыс пен зауыттарды тексереміз. Гуанчжоу, Шэньчжэнь зауыттарына барып, ISO сертификаттарын тексереміз.",
+                tab2_title: "Қытай → Алматы авто және т/ж логистикасы",
+                tab2_desc: "Құрама (LCL) және контейнерлік (FCL) жүктерді жеткізу. Алматы қаласының өнеркәсіптік аймақтарына дейін жеткізу.",
+                tab3_title: "Кедендік тазарту (Алматы кедені)",
+                tab3_desc: "Тауарды толық заңдастыру. Сіз ҚҚС төленген тауарды, ДТ декларациясын және барлық есептік құжаттарды аласыз.",
+                adv_subtitle: "Неліктен PROVANTRA B2B",
+                adv_title: "Алматыда бізбен жұмыс істеудің артықшылықтары",
+                adv1_h: "Алматыдағы жергілікті офис",
+                adv1_p: "Уақыт айырмашылығы бар шетелдік агенттермен сөйлесудің қажеті жоқ. Алматыдағы менеджеріміз әрқашан байланыста.",
+                adv2_h: "Қаржылық жауапкершілік",
+                adv2_p: "Шартта бекітілген баға. Біз кедендік баждардың өзгеру қаупін өз мойнымызға аламыз.",
+                adv3_h: "100% Сапа инспекциясы",
+                adv3_p: "Гуанчжоу мен Иу-дағы инспекторларымыз жүк тиелгенге дейін әрбір қорапты жеке тексереді."
+            },
+            en: {
+                nav_route: "China-Almaty Route",
+                nav_services: "Services",
+                nav_advantages: "Advantages",
+                nav_contacts: "Contacts",
+                btn_rfq: "Request Quote",
+                hero_badge: "Turnkey B2B Supply in Almaty",
+                hero_title_1: "Direct supply of industrial equipment & goods from China",
+                hero_title_2: "straight to your warehouse in Almaty",
+                hero_desc: "PROVANTRA B2B manages the entire supply chain: factory audits in China, contracting, custom clearance, and door-to-door delivery in Almaty.",
+                hero_cta: "Calculate Shipping Cost to Almaty",
+                hero_route_btn: "View Route",
+                stat_1: "Clearance Guarantee",
+                stat_2: "Days Express Delivery",
+                stat_3: "Local Office & Warehouse",
+                stat_4: "Defect Risk (QC)",
+                live_step1_title: "Guangzhou / Yiwu (China)",
+                live_step1_desc: "Inspection, consolidation & container loading",
+                live_step2_title: "Khorgos Border (Customs РК)",
+                live_step2_desc: "Customs declaration & ST-1 certification",
+                live_step3_title: "Almaty Warehouse (Delivery)",
+                live_step3_desc: "Unloading, final check & doc handover",
+                route_subtitle: "Transparent Transit Artery",
+                route_title: "Shipping Route: China → Khorgos → Almaty",
+                route_desc: "Direct road and rail corridor with minimal transit times across the Kazakhstan border.",
+                tabs_subtitle: "B2B Services in Almaty",
+                tabs_title: "End-to-End Supply Management",
+                tabs_desc: "Select a service tab below to explore detailed workflows.",
+                tab_btn_1: "Factory Sourcing & Audit",
+                tab_btn_2: "Almaty Delivery",
+                tab_btn_3: "Customs Clearance & Trade",
+                tab1_title: "Direct Sourcing in China",
+                tab1_desc: "We audit factories in Guangzhou, Shenzhen, and Ningbo. Verifying credentials, ISO standards, and securing golden samples.",
+                tab2_title: "Road & Rail Freight China → Almaty",
+                tab2_desc: "Optimized LCL & FCL logistics targeting Almaty industrial districts and warehouses.",
+                tab3_title: "Customs Clearance & Compliance",
+                tab3_desc: "Full legal import. Goods delivered with VAT paid, GTD customs declaration, and full accounting paperwork.",
+                adv_subtitle: "Why PROVANTRA B2B",
+                adv_title: "Our Advantages in Almaty",
+                adv1_h: "Local Office in Almaty",
+                adv1_p: "No dealing with overseas agents across time zones. Our Almaty team is available for in-person meetings.",
+                adv2_h: "Financial Responsibility",
+                adv2_p: "Fixed prices locked in contract. We cover customs duty risks and transit contingencies.",
+                adv3_h: "100% Quality Inspection",
+                adv3_p: "Our inspectors in Guangzhou and Yiwu check every item before loading into trucks."
+            }
+        };
+
+        function setLanguage(lang) {
+            // Highlight active button
+            ['ru', 'kk', 'en'].forEach(l => {
+                const btn = document.getElementById(`lang-${l}`);
+                if (l === lang) {
+                    btn.classList.add('text-gold-500', 'bg-gold-500/10');
+                    btn.classList.remove('text-zinc-400');
+                } else {
+                    btn.classList.remove('text-gold-500', 'bg-gold-500/10');
+                    btn.classList.add('text-zinc-400');
+                }
+            });
+
+            // Update DOM text content
+            const data = i18nData[lang];
+            if (!data) return;
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (data[key]) {
+                    el.innerText = data[key];
+                }
+            });
+        }
+
+        // 2. INTERACTIVE SERVICES TAB SWITCHING WITH ANIMATIONS
+        function switchTab(tabId) {
+            // Update buttons styling
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('border-gold-500', 'bg-gold-500', 'text-black', 'shadow-[0_0_20px_rgba(207,167,110,0.3)]');
+                btn.classList.add('border-white/10', 'bg-dark-800', 'text-zinc-400');
+            });
+
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('border-gold-500', 'bg-gold-500', 'text-black', 'shadow-[0_0_20px_rgba(207,167,110,0.3)]');
+                activeBtn.classList.remove('border-white/10', 'bg-dark-800', 'text-zinc-400');
+            }
+
+            // Hide all tab contents with animation
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => {
+                content.classList.add('opacity-0', 'scale-95', 'hidden');
+                content.classList.remove('opacity-100', 'scale-100', 'block');
+            });
+
+            // Show selected tab content
+            const selectedTab = document.getElementById(tabId);
+            if (selectedTab) {
+                selectedTab.classList.remove('hidden');
+                setTimeout(() => {
+                    selectedTab.classList.remove('opacity-0', 'scale-95');
+                    selectedTab.classList.add('opacity-100', 'scale-100', 'block');
+                }, 50);
+            }
+        }
+
+        // 3. SCROLL REVEAL ANIMATION (Intersection Observer)
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!('IntersectionObserver' in window)) {
+                document.querySelectorAll('.reveal-element').forEach(el => el.classList.add('active'));
+                return;
+            }
+            const observerOptions = {
+                threshold: 0.15,
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal-element').forEach(el => {
+                observer.observe(el);
+            });
+        });
+
+        // 4. MOBILE MENU & RFQ MODAL
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        if (menuBtn && mobileMenu) {
+            menuBtn.addEventListener('click', () => {
+                const isHidden = mobileMenu.classList.toggle('hidden');
+                menuBtn.setAttribute('aria-expanded', String(!isHidden));
+            });
+            document.querySelectorAll('.mobile-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                    menuBtn.setAttribute('aria-expanded', 'false');
+                });
+            });
+        }
+
+        function openRfqModal(serviceName = '') {
+            const modal = document.getElementById('rfq-modal');
+            const serviceField = document.getElementById('rfq-service-field');
+            if (serviceName && serviceField) {
+                serviceField.value = serviceName;
+            }
+            modal.classList.remove('invisible');
+            modal.classList.add('opacity-100', 'open');
+            document.body.style.overflow = 'hidden';
+            if (mobileMenu) mobileMenu.classList.add('hidden');
+        }
+
+        function closeRfqModal() {
+            const modal = document.getElementById('rfq-modal');
+            modal.classList.remove('opacity-100', 'open');
+            document.body.style.overflow = '';
+            
+            setTimeout(() => {
+                modal.classList.add('invisible');
+                document.getElementById('rfq-form').classList.remove('hidden');
+                document.getElementById('rfq-success').classList.add('hidden');
+                // согласие даётся заново при каждой отправке данных
+                const consent = document.getElementById('rfq-consent');
+                if (consent) consent.checked = false;
+            }, 350);
+        }
+
+        function handleRfqSubmit(e) {
+            e.preventDefault();
+            document.getElementById('rfq-form').classList.add('hidden');
+            document.getElementById('rfq-success').classList.remove('hidden');
+            setTimeout(() => {
+                closeRfqModal();
+            }, 3000);
+        }
+    
+        // Закрытие модального окна: клик по тёмному фону и клавиша Esc
+        (function () {
+            const modal = document.getElementById('rfq-modal');
+            if (!modal) return;
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeRfqModal();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key !== 'Escape') return;
+                const pm = document.getElementById('privacy-modal');
+                if (pm && pm.classList.contains('open')) { closePrivacyModal(); return; }
+                if (modal.classList.contains('open')) closeRfqModal();
+            });
+        })();
+
+        // 5. ПОЛИТИКА ОБРАБОТКИ ПЕРСОНАЛЬНЫХ ДАННЫХ (окно, ссылка #privacy)
+        const privacyModal = document.getElementById('privacy-modal');
+        let privacyLastFocus = null;
+
+        function openPrivacyModal(e) {
+            if (e && e.preventDefault) e.preventDefault();
+            if (!privacyModal) return;
+            privacyLastFocus = document.activeElement;
+            privacyModal.classList.add('open');
+            privacyModal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+            if (mobileMenu) mobileMenu.classList.add('hidden');
+            const body = document.getElementById('privacy-body');
+            if (body) { body.scrollTop = 0; body.focus({ preventScroll: true }); }
+            try { history.replaceState(null, '', '#privacy'); } catch (err) {}
+        }
+
+        function closePrivacyModal() {
+            if (!privacyModal || !privacyModal.classList.contains('open')) return;
+            privacyModal.classList.remove('open');
+            privacyModal.setAttribute('aria-hidden', 'true');
+            // если форма заявки открыта под политикой — оставляем блокировку прокрутки
+            const rfq = document.getElementById('rfq-modal');
+            if (!rfq || !rfq.classList.contains('open')) document.body.style.overflow = '';
+            try {
+                if (location.hash === '#privacy') history.replaceState(null, '', location.pathname + location.search);
+            } catch (err) {}
+            if (privacyLastFocus && privacyLastFocus.focus) privacyLastFocus.focus({ preventScroll: true });
+        }
+
+        if (privacyModal) {
+            // клик по тёмному фону закрывает только политику
+            privacyModal.addEventListener('click', (e) => {
+                if (e.target === privacyModal) closePrivacyModal();
+            });
+        }
+        // прямая ссылка на политику: сайт.kz/#privacy
+        window.addEventListener('hashchange', () => {
+            if (location.hash === '#privacy') openPrivacyModal(); else closePrivacyModal();
+        });
+        document.addEventListener('DOMContentLoaded', () => {
+            if (location.hash === '#privacy') openPrivacyModal();
+        });
+    </script>
+</body>
+</html>
